@@ -6,7 +6,6 @@ defmodule Db.Models.Card do
   schema "cards" do
     ###### 2.1-ecto-models-card
     field(:name)
-    belongs_to(:user, Db.Models.User)
     timestamps()
     ###################
 
