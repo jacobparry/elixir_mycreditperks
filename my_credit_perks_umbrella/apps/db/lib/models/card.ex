@@ -9,6 +9,10 @@ defmodule Db.Models.Card do
     timestamps()
     ###################
 
+    ###### 2.3-ecto-models-perks
+    has_many(:perks, Db.Models.Perk)
+    ###################
+
     @required_fields [:name]
     @optional_fields []
 
