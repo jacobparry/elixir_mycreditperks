@@ -146,3 +146,60 @@ https://hex.pm/packages/absinthe_relay for latest
   * `mix phx.server`
   * Now navigate to localhost:4000/playground/graphiql
   * You can explore this interface that will come into play later.
+
+  # 2.0--ecto-models-user
+1. Create a `User` Model
+  * Create a new folder and file `models/user.ex` at `[umbrella_app]/apps/[database_app]/lib//models/user.ex`
+```
+defmodule Db.Models.User do
+  use Ecto.Schema
+
+  import Ecto.Changeset
+
+  schema "users" do
+    ###### 2.0-ecto-models-user
+    field(:username, :string)
+    field(:password, :string)
+    field(:email, :string)
+    field(:age, :integer)
+    timestamps()
+    ###################
+  end
+
+  @required_fields [:username, :password, :email]
+  @optional_fields [:age]
+
+  def changeset(user, params \\ %{}) do
+    user
+    |> cast(params, @required_fields ++ @optional_fields)
+    |> validate_required(@required_fields)
+  end
+end
+```
+
+# 2.1--ecto-models-card
+1. Create a `Card` Model
+  * Create a new folder and file `models/card.ex` at `[umbrella_app]/apps/[database_app]/lib/models/card.ex`
+```
+defmodule Db.Models.Card do
+  use Ecto.Schema
+
+  import Ecto.Changeset
+
+  schema "cards" do
+    ###### 2.1-ecto-models-card
+    field(:name)
+    timestamps()
+    ###################
+
+    @required_fields [:name]
+    @optional_fields []
+
+    def changeset(card, params \\ %{}) do
+      card
+      |> cast(params, @required_fields ++ @optional_fields)
+      |> validate_required(@required_fields)
+    end
+  end
+end
+```
