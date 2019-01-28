@@ -11,9 +11,17 @@ defmodule Db.Models.User do
     field(:age, :integer)
     timestamps()
     ###################
+
+    ###### 2.1-ecto-models-card
+    has_many(:cards, Db.Models.Card)
+    ###################
   end
 
-  @required_fields [:username, :password, :email]
+  @required_fields [
+    :username,
+    :password,
+    :email
+  ]
   @optional_fields [:age]
 
   def changeset(user, params \\ %{}) do
