@@ -235,7 +235,7 @@ defmodule Db.Models.UserCard do
 end
 ```
 
-# 2.3--ecto-models-perks
+# 2.3-ecto-models-perks
 1. Create a `Perk` Model
   * Create a new folder (if it doesnt exist) and file `models/perk.ex` at `[umbrella_app]/apps/[database_app]/lib/models/perk.ex`
 ```
@@ -265,3 +265,37 @@ defmodule Db.Models.Perk do
   end
 end
 ```
+
+
+# 2.4-ecto-migrations
+  * Navigate to `[umbrella_app]/apps/[database_app]`
+    1. Run `mix ecto.gen.migration add_users_table`:
+      * Add the following to the `def change do` in the generated migration file
+        ```
+          create table(:users) do
+            add :username, :string, size: 50
+            add :password, :string, size: 100
+            add :email, :string, size: 50
+            add :age, :integer
+
+            timestamps()
+          end
+        ```
+    2. Run `mix ecto.gen.migration add_cards_table`:
+      * Add the following to the `def change do` in the generated migration file
+        ```
+        create table(:cards) do
+            add(:name, :string)
+            timestamps()
+        end
+        ```
+    2. Run `mix ecto.gen.migration add_user_cards_table`:
+      * Add the following to the `def change do` in the generated migration file
+        ```
+        create table(:user_cards) do
+            add(:user_id, references(:users, on_delete: :nothing))
+            add(:card_id, references(:cards, on_delete: :nothing))
+
+            timestamps()
+        end
+        ```
