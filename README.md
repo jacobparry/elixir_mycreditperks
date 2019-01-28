@@ -150,7 +150,7 @@ https://hex.pm/packages/absinthe_relay for latest
 
 # 2.0--ecto-models-user
 1. Create a `User` Model
-  * Create a new folder and file `models/user.ex` at `[umbrella_app]/apps/[database_app]/lib/[database_app]/user.ex`
+  * Create a new folder and file `models/user.ex` at `[umbrella_app]/apps/[database_app]/lib//models/user.ex`
 ```
 defmodule Db.Models.User do
   use Ecto.Schema
