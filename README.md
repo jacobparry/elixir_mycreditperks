@@ -297,7 +297,7 @@ end
             timestamps()
         end
         ```
-    2. Run `mix ecto.gen.migration add_user_cards_table`:
+    3. Run `mix ecto.gen.migration add_user_cards_table`:
       * Add the following to the `def change do` in the generated migration file
         ```
         create table(:user_cards) do
@@ -307,3 +307,20 @@ end
             timestamps()
         end
         ```
+    4. Run `mix ecto.gen.migration add_perks_table`:
+      * Add the following to the `def change do` in the generated migration file
+        ```
+        create table(:perks) do
+            add(:type, :string)
+            add(:description, :string)
+            add(:card_id, references(:cards, on_delete: :nothing))
+
+            timestamps()
+        end
+        ```
+  * Run `mix ecto.migrate` to run create tables in the database.
+    * If you open postgres by running `psql -d [database name], you will see 3 tables:
+    1. `characters` and `users`
+        * By running `\d characters` you will see that a Foreign key has been added for users.
+    2. `schema_migrations`
+        * This is how the app keeps track of what migrations have been run.
