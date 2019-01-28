@@ -43,14 +43,14 @@ https://github.com/jacobparry/elixir_mycreditperks
 2. Run the following command
   * `mix new [database-app-name] --sup`
   * A --sup option can be given to generate an OTP application skeleton including a supervision tree. Normally an app is generated without a supervisor and without the app callback.
-1. Open the file `[umbrella_app]/apps/[database_app]/mix.exs`
+3. Open the file `[umbrella_app]/apps/[database_app]/mix.exs`
   * Add the following dependencies found on hex.pm to the dependency block:
     1. `{:ecto, "~> 3.0"}` or https://hex.pm/packages/ecto (for the latest)
     2. `{:ecto_sql, "~> 3.0"}` or https://hex.pm/packages/ecto_sql (for the latest)
     2. `{:postgrex, "~> 0.14.1"}` or https://hex.pm/packages/postgrex (for the latest)
 
 
-2. Open the file `[umbrella_app]/apps/[database_app]/config/config.exs`
+4. Open the file `[umbrella_app]/apps/[database_app]/config/config.exs`
   * Add the following config blocks to the bottom of the file:
       ```
         config :[database_app], [DatabaseApp].Repo,
@@ -61,7 +61,7 @@ https://github.com/jacobparry/elixir_mycreditperks
         
         config :[database_app], ecto_repos: [Db.Repo]
       ```
-3. Create the file `[umbrella_app]/apps/[database_app]/lib/repo.ex`
+5. Create the file `[umbrella_app]/apps/[database_app]/lib/repo.ex`
   * Define the module as `[DatabaseApp].Repo`
   * Add this line: `use Ecto.Repo, otp_app: :elvenhearth`
     1. This defines this repo as an ecto repo.
@@ -71,13 +71,78 @@ defmodule Db.Repo do
 end
 ```
 
-4. Open the file `[umbrella_app]/apps/[database_app]/lib/[database_app]/application.ex`
+6. Open the file `[umbrella_app]/apps/[database_app]/lib/[database_app]/application.ex`
   * Inside of the `def start` function, add the following line as the first line inisde of it:
     1. `import Supervisor.Spec`
   * Inside of the `children = []` list in the `def start` function, add in:
     1. `worker([DatabaseApp].Repo, [])`
     2. This allows the repo to be restarted by a supervisor if it dies.
 
-5. Run `mix ecto.create`
+7. Run `mix ecto.create`
   * This will create the database as configured in step 2 above.
   * Running `mix ecto` will tell you the other tasks that ecto can perform`
+
+# 1.4-setup-absinthe
+1. Navigate into the `[umbrella_app]/apps` directory
+2. Run the following command
+  * `mix new [api-app-name] --sup`
+  * A --sup option can be given to generate an OTP application skeleton including a supervision tree. Normally an app is generated without a supervisor and without the app callback.
+
+3. Open the files `[umbrella_app]/apps/[api_app]/mix.exs` and `[umbrella_app]/apps/[ui_app]/mix.exs`
+  * Add the following dependencies found on hex.pm to the dependency block:
+```
+    {:absinthe, "~> 1.4"},
+    {:absinthe_plug, "~> 1.4"},
+    {:absinthe_phoenix, "~> 1.4"},
+    {:absinthe_relay, "~> 1.4"}
+```
+https://hex.pm/packages/absinthe for latest
+https://hex.pm/packages/absinthe_plug for latest
+https://hex.pm/packages/absinthe_phoenix for latest
+https://hex.pm/packages/absinthe_relay for latest
+  * Run `mix deps.get`
+
+4. Open the file `[umbrella_app]/apps/[ui_app]/lib/[ui_app]/application.ex`
+ * Inside of the `children = []` list in the `def start` function, add in:
+    1. `supervisor(Absinthe.Subscription, [UiWeb.Endpoint])`
+    2. This allows the app to be restarted by a supervisor if it dies.
+
+5. Open the file `[umbrella_app]/apps/[ui_app]/lib/[ui_app]_web/channels/user_socket.ex`
+  * At the top of the module, inside of the `defmodule do`, add:
+    1. `use Absinthe.Phoenix.Socket, schema: ElvenhearthPhxWeb.Schema`
+    2. This allows subscriptions to work.
+
+
+6. Open the file `[umbrella_app]/apps/[ui_app]/lib/[ui_app]_web/router.ex`
+  * Add the graphiql route to the router:
+    1. 
+      ```
+        scope "/playground" do
+          pipe_through :api
+
+          forward("/graphiql", Absinthe.Plug.GraphiQL,
+            schema: ElvenhearthPhxWeb.Schema,
+            interface: :playground
+          )
+        end
+      ```
+
+7. Create the file `[umbrella_app]/apps/[api_app]/lib/[api_app]/schema.ex`
+  * `defmodule [ApiApp].Schema do`
+  * Add `use Absinthe.Schema` at the top of the module
+  * Add this simple query:
+    1. 
+      ```
+        query do
+          field :health, :string do
+            resolve(fn _, _, _ ->
+              {:ok, "up"}
+            end)
+          end
+        end
+      ```
+
+6. From `[umbrella_app]`, run the following command:
+  * `mix phx.server`
+  * Now navigate to localhost:4000/playground/graphiql
+  * You can explore this interface that will come into play later.
