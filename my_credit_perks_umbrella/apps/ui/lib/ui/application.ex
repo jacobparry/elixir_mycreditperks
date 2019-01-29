@@ -9,9 +9,10 @@ defmodule Ui.Application do
     # List all child processes to be supervised
     children = [
       # Start the endpoint when the application starts
-      UiWeb.Endpoint
+      UiWeb.Endpoint,
       # Starts a worker by calling: Ui.Worker.start_link(arg)
       # {Ui.Worker, arg},
+      supervisor(Absinthe.Subscription, [UiWeb.Endpoint])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
