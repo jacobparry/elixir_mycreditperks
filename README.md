@@ -3,7 +3,6 @@ A fun project designed to show cards and the perks associated with them.
 
 # Setup
 * Install Elixir, node, postgres
-* mix archive.install https://github.com/phoenixframework/archives/raw/master/phx_new.ez
 
 # Details
 https://github.com/jacobparry/elixir_mycreditperks
