@@ -3,7 +3,6 @@ A fun project designed to show cards and the perks associated with them.
 
 # Setup
 * Install Elixir, node, postgres
-* mix archive.install https://github.com/phoenixframework/archives/raw/master/phx_new.ez
 
 # Details
 https://github.com/jacobparry/elixir_mycreditperks
@@ -26,14 +25,13 @@ https://github.com/jacobparry/elixir_mycreditperks
 
 # 1.2-setup-elixir-phoenix-app
 1. Navigate into the `[umbrella_app]/apps` directory
-2. Run the following command
+2. Run the following commands
+  * `mix archive.install hex phx_new 1.4.0`
   * `mix phx.new ui --no-ecto`
   * When asked, select `Y` or the default option for installing the dependencies.
   * The --no-ecto tells phoenix not to include the ecto wrapper or any of the files needed to interact with ecto.
 3. Navigate into `[umbrella_app]/apps/ui/assets`
   * Run `npm install`
-4. Open  `[umbrella_app]/apps/ui/mix.exs`
-    * Under `deps`, add `{:plug_cowboy, "~> 1.0"}`
 5. Test that everything works by navigating to the root `[umbrella_app]` and running `mix phx.server`.
     * Run `mix phx.server`
     * In a browser, open `localhost:4000`. You should see a default Phoenix app page.
