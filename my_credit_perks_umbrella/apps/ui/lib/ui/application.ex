@@ -7,9 +7,11 @@ defmodule Ui.Application do
 
   def start(_type, _args) do
     import Supervisor.Spec
+
     # List all child processes to be supervised
     children = [
-      # Start the endpoint when the application starts
+      # Start your own worker by calling: Ui.Worker.start_link(arg1, arg2, arg3)
+      # worker(Ui.Worker, [arg1, arg2, arg3]),
       UiWeb.Endpoint,
       # Starts a worker by calling: Ui.Worker.start_link(arg)
       # {Ui.Worker, arg},

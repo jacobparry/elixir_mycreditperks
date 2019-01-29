@@ -145,6 +145,7 @@ https://hex.pm/packages/absinthe_relay for latest
   * Now navigate to localhost:4000/playground/graphiql
   * You can explore this interface that will come into play later.
 
+
 # 2.0--ecto-models-user
 1. Create a `User` Model
   * Create a new folder and file `models/user.ex` (if it doesnt exist) at `[umbrella_app]/apps/[database_app]/lib//models/user.ex`
