@@ -13,7 +13,11 @@ defmodule Db.Models.User do
     ###################
   end
 
-  @required_fields [:username, :password, :email]
+  @required_fields [
+    :username,
+    :password,
+    :email
+  ]
   @optional_fields [:age]
 
   def changeset(user, params \\ %{}) do
