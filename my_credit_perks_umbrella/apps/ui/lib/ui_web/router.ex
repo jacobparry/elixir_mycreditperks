@@ -14,7 +14,6 @@ defmodule UiWeb.Router do
   end
 
   scope "/", UiWeb do
-    # Use the default browser stack
     pipe_through(:browser)
 
     get("/", PageController, :index)
