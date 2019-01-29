@@ -147,7 +147,7 @@ https://hex.pm/packages/absinthe_relay for latest
 
 # 2.0--ecto-models-user
 1. Create a `User` Model
-  * Create a new folder and file `models/user.ex` at `[umbrella_app]/apps/[database_app]/lib//models/user.ex`
+  * Create a new folder and file `models/user.ex` (if it doesnt exist) at `[umbrella_app]/apps/[database_app]/lib//models/user.ex`
 ```
 defmodule Db.Models.User do
   use Ecto.Schema
@@ -177,7 +177,7 @@ end
 
 # 2.1--ecto-models-card
 1. Create a `Card` Model
-  * Create a new folder and file `models/card.ex` at `[umbrella_app]/apps/[database_app]/lib/models/card.ex`
+  * Create a new folder and file `models/card.ex` (if it doesnt exist) at `[umbrella_app]/apps/[database_app]/lib/models/card.ex`
 ```
 defmodule Db.Models.Card do
   use Ecto.Schema
@@ -191,6 +191,37 @@ defmodule Db.Models.Card do
     ###################
 
     @required_fields [:name]
+    @optional_fields []
+
+    def changeset(card, params \\ %{}) do
+      card
+      |> cast(params, @required_fields ++ @optional_fields)
+      |> validate_required(@required_fields)
+    end
+  end
+end
+```
+
+# 2.2--ecto-models-user-card
+1. Create a `Card` Model
+  * Create a new folder (if it doesnt exist) and file `models/card.ex` at `[umbrella_app]/apps/[database_app]/lib/models/user_card.ex`
+```
+defmodule Db.Models.UserCard do
+  use Ecto.Schema
+
+  import Ecto.Changeset
+
+  schema "user_cards" do
+    ###### 2.2-ecto-models-user-cards
+    belongs_to(:user, Db.Models.User)
+    belongs_to(:card, Db.Models.Card)
+    timestamps()
+    ###################
+
+    @required_fields [
+      :user_id,
+      :card_id
+    ]
     @optional_fields []
 
     def changeset(card, params \\ %{}) do
