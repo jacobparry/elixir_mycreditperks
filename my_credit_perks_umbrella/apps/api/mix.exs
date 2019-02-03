@@ -33,7 +33,8 @@ defmodule Api.MixProject do
       {:absinthe, "~> 1.4"},
       {:absinthe_plug, "~> 1.4"},
       {:absinthe_phoenix, "~> 1.4"},
-      {:absinthe_relay, "~> 1.4"}
+      {:absinthe_relay, "~> 1.4"},
+      {:ui, in_umbrella: true}
     ]
   end
 end
