@@ -1,5 +1,8 @@
 defmodule Api.SchemaTest do
   use ExUnit.Case
+
+  # UiWeb.ConnCase allows us to build a connection and post it against an api endpoint
+  # This allows us to test our GraphQL queries
   use UiWeb.ConnCase, async: true
 
   @query """
