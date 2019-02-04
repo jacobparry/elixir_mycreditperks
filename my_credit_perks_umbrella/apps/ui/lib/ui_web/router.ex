@@ -22,8 +22,10 @@ defmodule UiWeb.Router do
   scope "/playground" do
     pipe_through(:api)
 
+    # This creates the endpoint that an API client and our tests will use.
     forward("/api", Absinthe.Plug, schema: Api.Schema)
 
+    # This enables the "in-browser" IDE for writing GraphQL things.
     forward("/graphiql", Absinthe.Plug.GraphiQL,
       schema: Api.Schema,
       interface: :playground
