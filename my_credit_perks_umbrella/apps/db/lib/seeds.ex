@@ -8,7 +8,7 @@ defmodule Db.Seeds do
 
   alias Db.Repo
 
-  def seed() do
+  def run() do
     seed_users()
     seed_cards()
   end
@@ -16,19 +16,19 @@ defmodule Db.Seeds do
   defp seed_users() do
     users = [
       User.changeset(%User{}, %{
-        username: "test1",
-        password: "1234",
-        email: "test1@test.com"
+        username: "test_1",
+        password: "very_secure_password",
+        email: "test_1@test.com"
       }),
       User.changeset(%User{}, %{
-        username: "test2",
-        password: "1234",
-        email: "test2@test.com"
+        username: "test_2",
+        password: "very_secure_password",
+        email: "test_2@test.com"
       }),
       User.changeset(%User{}, %{
-        username: "test3",
-        password: "1234",
-        email: "test3@test.com"
+        username: "test_3",
+        password: "very_secure_password",
+        email: "test_3@test.com"
       })
     ]
 

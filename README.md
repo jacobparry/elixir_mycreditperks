@@ -323,3 +323,72 @@ end
         * By running `\d characters` you will see that a Foreign key has been added for users.
     2. `schema_migrations`
         * This is how the app keeps track of what migrations have been run.
+
+
+# 2.5-ecto-seeds
+  * Navigate to `[umbrella_app]/apps/[database_app]/lib`
+    1. Create a file called `seeds.ex`. 
+      * We will use this file to seed things (for now) in our database for our tests and our Graphiql IDE queries.
+    2. Define the module `Db.Seeds` and write some seeding functions. Your file will look something similar to this:
+
+    ```
+    defmodule Db.Seeds do
+      alias Db.Models.{
+        Card,
+        Perk,
+        User,
+        UserCard
+      }
+
+      alias Db.Repo
+
+      def run() do
+        seed_users()
+        seed_cards()
+      end
+
+      defp seed_users() do
+        users = [
+          User.changeset(%User{}, %{
+            username: "test_1",
+            password: "very_secure_password",
+            email: "test_1@test.com"
+          }),
+          User.changeset(%User{}, %{
+            username: "test_2",
+            password: "very_secure_password",
+            email: "test_2@test.com"
+          }),
+          User.changeset(%User{}, %{
+            username: "test_3",
+            password: "very_secure_password",
+            email: "test_3@test.com"
+          })
+        ]
+
+        inserted_users =
+          Enum.map(users, fn user ->
+            Repo.insert(user)
+          end)
+      end
+
+      defp seed_cards() do
+        cards = [
+          Card.changeset(%Card{}, %{
+            name: "Chase Sapphire Preferred"
+          }),
+          Card.changeset(%Card{}, %{
+            name: "Citi Costco Visa"
+          }),
+          Card.changeset(%Card{}, %{
+            name: "American Express Gold"
+          })
+        ]
+
+        inserted_cards =
+          Enum.map(cards, fn card ->
+            Repo.insert(card)
+          end)
+      end
+    end
+    ```
