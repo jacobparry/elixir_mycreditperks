@@ -323,3 +323,180 @@ end
         * By running `\d characters` you will see that a Foreign key has been added for users.
     2. `schema_migrations`
         * This is how the app keeps track of what migrations have been run.
+
+
+# 2.5-ecto-seeds
+  * Navigate to `[umbrella_app]/apps/[database_app]/lib`
+    1. Create a file called `seeds.ex`. 
+      * We will use this file to seed things (for now) in our database for our tests and our Graphiql IDE queries.
+    2. Define the module `Db.Seeds` and write some seeding functions. Your file will look something similar to this:
+
+    ```
+    defmodule Db.Seeds do
+      alias Db.Models.{
+        Card,
+        Perk,
+        User,
+        UserCard
+      }
+
+      alias Db.Repo
+
+      def run() do
+        seed_users()
+        seed_cards()
+      end
+
+      defp seed_users() do
+        users = [
+          User.changeset(%User{}, %{
+            username: "test_1",
+            password: "very_secure_password",
+            email: "test_1@test.com"
+          }),
+          User.changeset(%User{}, %{
+            username: "test_2",
+            password: "very_secure_password",
+            email: "test_2@test.com"
+          }),
+          User.changeset(%User{}, %{
+            username: "test_3",
+            password: "very_secure_password",
+            email: "test_3@test.com"
+          })
+        ]
+
+        inserted_users =
+          Enum.map(users, fn user ->
+            Repo.insert(user)
+          end)
+      end
+
+      defp seed_cards() do
+        cards = [
+          Card.changeset(%Card{}, %{
+            name: "Chase Sapphire Preferred"
+          }),
+          Card.changeset(%Card{}, %{
+            name: "Citi Costco Visa"
+          }),
+          Card.changeset(%Card{}, %{
+            name: "American Express Gold"
+          })
+        ]
+
+        inserted_cards =
+          Enum.map(cards, fn card ->
+            Repo.insert(card)
+          end)
+      end
+    end
+    ```
+
+# 2.6-setup-tests
+  * One thing that we have neglected to do up until this point was to write some tests. Let's correct that.
+  * We need to write tests for our DB models and our single health field in our GraphQL schema.
+  1. Create a folder called `models` located at `[umbrella_app]/apps/[database_app]/test/models`.
+  2. Create a file named `user_test.exs` located at `[umbrella_app]/apps/[database_app]/models/user_test.exs`
+    * Write some tests that test the functionality of the `user.ex` ecto changeset function.
+    * The file will look something like this:
+    ```
+    defmodule Db.Models.UserTest do
+      use ExUnit.Case
+      alias Db.Models.User
+
+      describe "changeset/2" do
+        test "returns a valid changeset" do
+          params = %{
+            username: "user_1",
+            password: "password_1",
+            email: "email_1",
+            age: "21"
+          }
+
+          changeset = User.changeset(%User{}, params)
+          assert changeset.valid?
+        end
+
+        test "a missing USERNAME returns an invalid changeset" do
+          params = %{
+            password: "password_1",
+            email: "email_1",
+            age: "21"
+          }
+
+          changeset = User.changeset(%User{}, params)
+          refute changeset.valid?
+        end
+
+        test "a missing PASSWORD returns an invalid changeset" do
+          params = %{
+            username: "user_1",
+            email: "email_1",
+            age: "21"
+          }
+
+          changeset = User.changeset(%User{}, params)
+          refute changeset.valid?
+        end
+
+        test "a missing EMAIL returns an invalid changeset" do
+          params = %{
+            username: "user_1",
+            password: "password_1",
+            age: "21"
+          }
+
+          changeset = User.changeset(%User{}, params)
+          refute changeset.valid?
+        end
+
+        test "a missing AGE still returns a valid changeset" do
+          params = %{
+            username: "user_1",
+            password: "password_1",
+            email: "email_1"
+          }
+
+          changeset = User.changeset(%User{}, params)
+          assert changeset.valid?
+        end
+      end
+    end
+    ```
+  3. Once you have done that, create test files for all the models that we created:`card_test.ex`, `perk_test.ex`, `user_card_test.exs`. They will all follow a similar style of testing.
+  4. Add an api endpoint for our tests to hit for testing Graphql queries  
+    * Navigate to `[umbrella_app]/apps/[ui_app]/lib/ui_web/router.ex`
+    * Inside of the scope that we defined earlier, we will add another forward.
+    * `forward("/api", Absinthe.Plug, schema: Api.Schema)`
+    * This creates the endpoint that an API client and our tests will use.
+  5. Write a simple test that tests our `health` field in our Absinthe Schema file.
+    * Navigate to `[umbrella_app]/apps/[api]/mix.exs`
+    * Add `{:ui, in_umbrella: true}` inside of the `deps` function. This allows us to use Phoenix to help test our api endpoint.
+    * Create a file named `schema_test.exs` located at `[umbrella_app]/apps/[api_app]/test/api/schema_test.exs`
+    * The file will look like this:
+    ```
+    defmodule Api.SchemaTest do
+      use ExUnit.Case
+
+      # UiWeb.ConnCase allows us to build a connection and post it against an api endpoint
+      # This allows us to test our GraphQL queries
+      use UiWeb.ConnCase, async: true
+
+      @query """
+      {
+        health
+      }
+      """
+
+      describe "query" do
+        test "health" do
+          conn = build_conn()
+          conn = get(conn, "/playground/api", query: @query)
+
+          response = json_response(conn, 200)
+          assert response == %{"data" => %{"health" => "up"}}
+        end
+      end
+    end
+    ```

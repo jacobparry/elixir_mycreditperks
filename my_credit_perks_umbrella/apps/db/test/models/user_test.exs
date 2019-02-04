@@ -5,33 +5,31 @@ defmodule Db.Models.UserTest do
   describe "changeset/2" do
     test "returns a valid changeset" do
       params = %{
-        username: "user_01",
-        password: "password_01",
-        email: "email_01",
+        username: "user_1",
+        password: "password_1",
+        email: "email_1",
         age: "21"
       }
 
       changeset = User.changeset(%User{}, params)
-
       assert changeset.valid?
     end
 
     test "a missing USERNAME returns an invalid changeset" do
       params = %{
-        password: "password_01",
-        email: "email_01",
+        password: "password_1",
+        email: "email_1",
         age: "21"
       }
 
       changeset = User.changeset(%User{}, params)
-
       refute changeset.valid?
     end
 
     test "a missing PASSWORD returns an invalid changeset" do
       params = %{
-        username: "user_01",
-        email: "email_01",
+        username: "user_1",
+        email: "email_1",
         age: "21"
       }
 
@@ -41,8 +39,8 @@ defmodule Db.Models.UserTest do
 
     test "a missing EMAIL returns an invalid changeset" do
       params = %{
-        username: "user_01",
-        password: "password_01",
+        username: "user_1",
+        password: "password_1",
         age: "21"
       }
 
@@ -52,9 +50,9 @@ defmodule Db.Models.UserTest do
 
     test "a missing AGE still returns a valid changeset" do
       params = %{
-        username: "user_01",
-        password: "password_01",
-        email: "email_01"
+        username: "user_1",
+        password: "password_1",
+        email: "email_1"
       }
 
       changeset = User.changeset(%User{}, params)
