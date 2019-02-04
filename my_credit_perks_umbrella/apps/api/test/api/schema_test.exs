@@ -11,7 +11,7 @@ defmodule Api.SchemaTest do
   describe "query" do
     test "health" do
       conn = build_conn()
-      conn = get(conn, "/playground/graphiql", query: @query)
+      conn = get(conn, "/playground/api", query: @query)
 
       response = json_response(conn, 200)
       assert response == %{"data" => %{"health" => "up"}}
