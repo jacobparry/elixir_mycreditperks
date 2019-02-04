@@ -1,6 +1,12 @@
 defmodule Api.Schema do
   use Absinthe.Schema
 
+  alias Db.Repo
+
+  alias Db.Models.{
+    User
+  }
+
   """
   Keep in mind that your API and the underlying data representations
   do not need to be identical, or even have the same structure.
@@ -24,5 +30,23 @@ defmodule Api.Schema do
         {:ok, "yup"}
       end)
     end
+
+    field(:users, list_of(:user)) do
+      resolve(fn _, _, _ ->
+        {:ok, Repo.all(User)}
+      end)
+    end
+  end
+
+  object :user do
+    field(:id, :id)
+    field(:username, :string)
+    field(:password, :string)
+    field(:email, :string)
+    field(:age, :integer)
   end
 end
+
+# IEX Commands to use
+# Absinthe.Schema.lookup_type(Api.Schema, "Object") # Object is some object defined in the schema
+# Absinthe.Schema.lookup_type(Api.Schema, "RootQueryType")
