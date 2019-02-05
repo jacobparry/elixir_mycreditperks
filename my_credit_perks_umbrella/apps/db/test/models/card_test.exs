@@ -1,5 +1,5 @@
 defmodule Db.Models.CardTest do
-  use ExUnit.Case
+  use Db.RepoCase
   alias Db.Models.Card
 
   describe "changeset/2" do
