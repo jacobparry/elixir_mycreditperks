@@ -1,5 +1,5 @@
-defmodule Api.SchemaTest do
-  # use ExUnit.Case
+defmodule Api.Resolvers.UserResolverTest do
+  # use Api.ApiCase
 
   # UiWeb.ConnCase allows us to build a connection and post it against an api endpoint
   # This allows us to test our GraphQL queries
@@ -7,17 +7,19 @@ defmodule Api.SchemaTest do
 
   @query """
   {
-    healthy
+    users {
+      id
+    }
   }
   """
 
   describe "query" do
-    test "healthy" do
+    test "users" do
       conn = build_conn()
       conn = get(conn, "/playground/api", query: @query)
 
       response = json_response(conn, 200)
-      assert response == %{"data" => %{"healthy" => "yup"}}
+      assert response == %{"data" => %{"users" => []}}
     end
   end
 end
