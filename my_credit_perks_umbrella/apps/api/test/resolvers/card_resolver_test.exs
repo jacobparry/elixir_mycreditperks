@@ -1,4 +1,4 @@
-defmodule Api.Resolvers.UserResolverTest do
+defmodule Api.Resolvers.CardResolverTest do
   # Api.ApiCase allows us to build a connection and post it against an api endpoint
   # This allows us to test our GraphQL queries.
   # Once the mode is manual, tests can also be async
@@ -17,35 +17,32 @@ defmodule Api.Resolvers.UserResolverTest do
 
   @query """
   {
-    users {
+    cards {
       id
-      username
-      email
-      password
-      userCards {
+      name
+      usersThatHaveCard {
         id
-        name
       }
     }
   }
   """
 
-  test "find_all_users" do
+  test "find_all_cards" do
     conn = build_conn()
     conn = get(conn, "/playground/api", query: @query)
     response = json_response(conn, 200)
-    users = response["data"]["users"]
+    users = response["data"]["cards"]
     assert length(users) > 0
   end
 
-  test "find_cards_for_user/3" do
+  test "find_users_for_card/3" do
     conn = build_conn()
     conn = get(conn, "/playground/api", query: @query)
     response = json_response(conn, 200)
-    returned_users = response["data"]["users"]
+    returned_cards = response["data"]["cards"]
 
-    Enum.any?(returned_users, fn returned_user ->
-      assert length(returned_user["userCards"]) > 0
+    Enum.any?(returned_cards, fn returned_card ->
+      assert length(returned_card["usersThatHaveCard"]) > 0
     end)
   end
 end
