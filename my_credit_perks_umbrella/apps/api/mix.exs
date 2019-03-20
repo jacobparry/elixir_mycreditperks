@@ -39,6 +39,7 @@ defmodule Api.MixProject do
       {:absinthe_plug, "~> 1.4"},
       {:absinthe_phoenix, "~> 1.4"},
       {:absinthe_relay, "~> 1.4"},
+      {:apollo_tracing, "~> 0.4.1"},
       {:db, in_umbrella: true},
       {:ui, in_umbrella: true}
     ]
