@@ -10,6 +10,10 @@ defmodule Api.Resolvers.UserResolver do
   alias Db.Repo
 
   def find_all_users(_, _, _) do
+    Repo.all(User)
+    |> length()
+    |> IO.inspect()
+
     {:ok, Repo.all(User)}
   end
 
@@ -20,6 +24,10 @@ defmodule Api.Resolvers.UserResolver do
         where: uc.user_id == ^parent.id,
         select: c
       )
+
+    Repo.all(query)
+    |> length()
+    |> IO.inspect()
 
     {:ok, Repo.all(query)}
   end

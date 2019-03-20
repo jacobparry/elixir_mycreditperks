@@ -1,0 +1,12 @@
+{application,db,
+             [{applications,[kernel,stdlib,elixir,logger,ecto,postgrex,
+                             ecto_sql]},
+              {description,"db"},
+              {modules,['Elixir.Db','Elixir.Db.Application',
+                        'Elixir.Db.Models.Card','Elixir.Db.Models.Perk',
+                        'Elixir.Db.Models.User','Elixir.Db.Models.UserCard',
+                        'Elixir.Db.Repo','Elixir.Db.RepoCase',
+                        'Elixir.Db.Seeds']},
+              {registered,[]},
+              {vsn,"0.1.0"},
+              {mod,{'Elixir.Db.Application',[]}}]}.

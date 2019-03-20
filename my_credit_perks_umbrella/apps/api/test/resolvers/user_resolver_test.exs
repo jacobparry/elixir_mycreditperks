@@ -30,6 +30,24 @@ defmodule Api.Resolvers.UserResolverTest do
   }
   """
 
+  @query_infinite """
+  {
+    users {
+      userCards {
+        usersThatHaveCard {
+          userCards {
+            usersThatHaveCard {
+              userCards {
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  """
+
   test "find_all_users" do
     conn = build_conn()
     conn = get(conn, "/playground/api", query: @query)
@@ -47,5 +65,20 @@ defmodule Api.Resolvers.UserResolverTest do
     Enum.any?(returned_users, fn returned_user ->
       assert length(returned_user["userCards"]) > 0
     end)
+  end
+
+  test "infinite loop between users and cards" do
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: @query_infinite)
+
+    response =
+      json_response(conn, 200)
+      |> IO.inspect()
+
+    # returned_users = response["data"]["users"]
+
+    # Enum.any?(returned_users, fn returned_user ->
+    #   assert length(returned_user["userCards"]) > 0
+    # end)
   end
 end
