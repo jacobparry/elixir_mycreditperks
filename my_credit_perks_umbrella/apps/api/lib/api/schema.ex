@@ -39,6 +39,7 @@ defmodule Api.Schema do
     end
 
     field(:users, list_of(:user)) do
+      arg(:matching, :string)
       resolve(&UserResolver.find_all_users/3)
     end
 
