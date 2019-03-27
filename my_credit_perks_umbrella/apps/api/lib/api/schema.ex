@@ -40,6 +40,7 @@ defmodule Api.Schema do
 
     field(:users, list_of(:user)) do
       arg(:matching, :string)
+      arg(:order, type: :sort_order, default_value: :asc)
       resolve(&UserResolver.find_all_users/3)
     end
 
@@ -67,6 +68,11 @@ defmodule Api.Schema do
     field(:users_that_have_card, list_of(:user)) do
       resolve(&CardResolver.find_users_for_card/3)
     end
+  end
+
+  enum :sort_order do
+    value(:asc)
+    value(:desc)
   end
 end
 

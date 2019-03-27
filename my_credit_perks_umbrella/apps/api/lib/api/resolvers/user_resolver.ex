@@ -9,6 +9,17 @@ defmodule Api.Resolvers.UserResolver do
 
   alias Db.Repo
 
+  def find_all_users(_parent, %{order: order} = _params, _resolution) do
+    IO.inspect("MATCHING")
+
+    query =
+      from(u in User,
+        order_by: [^order, u.username]
+      )
+
+    {:ok, Repo.all(query)}
+  end
+
   def find_all_users(_parent, %{matching: matching} = _params, _resolution) do
     IO.inspect("MATCHING")
 
