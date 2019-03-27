@@ -21,7 +21,7 @@ defmodule Api.Resolvers.UserResolver do
     |> length()
     |> IO.inspect()
 
-    {:ok, Repo.all(User)}
+    {:ok, Repo.all(query)}
   end
 
   def find_all_users(_parent, params, _resolution) do
