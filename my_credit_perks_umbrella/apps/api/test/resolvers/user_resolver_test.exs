@@ -48,6 +48,22 @@ defmodule Api.Resolvers.UserResolverTest do
   }
   """
 
+  @query_matching """
+  {
+    users (matching: "1") {
+      username
+    }
+  }
+  """
+
+  @query_matching_bad_value """
+  {
+    users (matching: 123) {
+      username
+    }
+  }
+  """
+
   test "find_all_users" do
     conn = build_conn()
     conn = get(conn, "/playground/api", query: @query)
@@ -67,18 +83,29 @@ defmodule Api.Resolvers.UserResolverTest do
     end)
   end
 
-  test "infinite loop between users and cards" do
+  test "users field returns users filtered by username" do
     conn = build_conn()
-    conn = get(conn, "/playground/api", query: @query_infinite)
+    conn = get(conn, "/playground/api", query: @query_matching)
+    response = json_response(conn, 200)
+    returned_users = response["data"]["users"]
+    user = hd(returned_users)
+    assert length(returned_users) == 1
+    assert user == %{"username" => "test_1"}
 
-    response =
-      json_response(conn, 200)
-      |> IO.inspect()
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "users" => [
+                 %{"username" => "test_1"}
+               ]
+             }
+           }
+  end
 
-    # returned_users = response["data"]["users"]
-
-    # Enum.any?(returned_users, fn returned_user ->
-    #   assert length(returned_user["userCards"]) > 0
-    # end)
+  test "users field returns errors when using a bad value" do
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: @query_matching_bad_value)
+    response = json_response(conn, 200)
+    assert %{"errors" => [%{"message" => message}]} = json_response(conn, 200)
+    assert message == "Argument \"matching\" has invalid value 123."
   end
 end
