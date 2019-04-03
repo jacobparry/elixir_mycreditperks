@@ -114,4 +114,79 @@ defmodule Api.Resolvers.UserResolverTest do
              }
            }
   end
+
+  test "user ordering using sort_order enum asc by default" do
+    query = """
+    {
+      users {
+        username
+      }
+    }
+    """
+
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: query)
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "users" => [
+                 %{"username" => "test_1"},
+                 %{"username" => "test_2"},
+                 %{"username" => "test_3"}
+               ]
+             }
+           }
+  end
+
+  test "user ordering using sort_order enum desc" do
+    # By convention, enum values are passed in all uppercase letters.
+    query = """
+    {
+      users (order: DESC) {
+        username
+      }
+    }
+    """
+
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: query)
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "users" => [
+                 %{"username" => "test_3"},
+                 %{"username" => "test_2"},
+                 %{"username" => "test_1"}
+               ]
+             }
+           }
+  end
+
+  test "user ordering using sort_order enum desc with variable" do
+    # By convention, enum values are passed in all uppercase letters.
+    query = """
+    query ($order: SortOrder!) {
+      users (order: $order) {
+        username
+      }
+    }
+    """
+
+    variables = %{
+      order: "DESC"
+    }
+
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: query, variables: variables)
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "users" => [
+                 %{"username" => "test_3"},
+                 %{"username" => "test_2"},
+                 %{"username" => "test_1"}
+               ]
+             }
+           }
+  end
 end
