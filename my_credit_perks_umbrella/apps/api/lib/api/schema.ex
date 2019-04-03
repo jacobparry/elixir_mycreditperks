@@ -39,8 +39,12 @@ defmodule Api.Schema do
     end
 
     field(:users, list_of(:user)) do
+      @desc "Matching a username"
       arg(:matching, :string)
+
+      @desc "Orders by username"
       arg(:order, type: :sort_order, default_value: :asc)
+
       resolve(&UserResolver.find_all_users/3)
     end
 
@@ -70,6 +74,7 @@ defmodule Api.Schema do
     end
   end
 
+  # By convention, enum values are passed in all uppercase letters.
   enum :sort_order do
     value(:asc)
     value(:desc)
