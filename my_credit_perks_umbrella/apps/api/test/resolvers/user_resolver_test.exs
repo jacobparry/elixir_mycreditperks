@@ -235,4 +235,51 @@ defmodule Api.Resolvers.UserResolverTest do
              }
            }
   end
+
+  test "user non null filters" do
+    # By convention, enum values are passed in all uppercase letters.
+    query = """
+    query {
+      usersWithNonNullFilters  {
+        username
+      }
+    }
+    """
+
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: query)
+
+    assert json_response(conn, 200) == %{
+             "errors" => [
+               %{
+                 "locations" => [%{"column" => 0, "line" => 2}],
+                 "message" => "In argument \"filter\": Expected type \"UserFilter!\", found null."
+               }
+             ]
+           }
+  end
+
+  test "user non null inner filters" do
+    # By convention, enum values are passed in all uppercase letters.
+    query = """
+    query {
+      usersWithNonNullInnerFilters (filter: {}) {
+        username
+      }
+    }
+    """
+
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: query)
+
+    assert json_response(conn, 200) == %{
+             "errors" => [
+               %{
+                 "locations" => [%{"column" => 0, "line" => 2}],
+                 "message" =>
+                   "Argument \"filter\" has invalid value {}.\nIn field \"matching\": Expected type \"String!\", found null."
+               }
+             ]
+           }
+  end
 end
