@@ -110,6 +110,21 @@ defmodule Api.Schema do
     value(:asc)
     value(:desc)
   end
+
+  scalar :date do
+    # Parse converts a value coming from the user into an Elixir term or returns :error
+    parse(fn input ->
+      case(Date.from_iso8601(input.value)) do
+        {:ok, date} -> {:ok, date}
+        _ -> :error
+      end
+    end)
+
+    # Serialize converts a Elixir term back into a value that can be returned via JSON
+    serialize(fn date ->
+      Date.to_iso8601(date)
+    end)
+  end
 end
 
 # IEX Commands to use
