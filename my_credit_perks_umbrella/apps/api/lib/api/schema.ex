@@ -133,7 +133,7 @@ defmodule Api.Schema do
     # Serialize converts a Elixir term back into a value that can be returned via JSON
     serialize(fn datetime ->
       datetime
-      |> DateTime.to_date()
+      |> DateTime.from_naive!("Etc/UTC")
       |> DateTime.to_iso8601()
     end)
   end
