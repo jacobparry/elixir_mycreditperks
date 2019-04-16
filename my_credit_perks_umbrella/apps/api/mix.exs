@@ -41,7 +41,8 @@ defmodule Api.MixProject do
       {:absinthe_relay, "~> 1.4"},
       {:apollo_tracing, "~> 0.4.1"},
       {:db, in_umbrella: true},
-      {:ui, in_umbrella: true}
+      {:ui, in_umbrella: true},
+      {:timex, "~> 3.5"}
     ]
   end
 end

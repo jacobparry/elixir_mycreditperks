@@ -282,4 +282,66 @@ defmodule Api.Resolvers.UserResolverTest do
              ]
            }
   end
+
+  describe "datetime scalar type" do
+    # This is a bad test because it relys on when the seed data was inserted.
+    test "filters by datetime" do
+      query = """
+      query ($filter: UserFilter) {
+        usersWithFilters (filter: $filter) {
+          username
+        }
+      }
+      """
+
+      variables = %{
+        filter: %{
+          added_before: "2019-04-21"
+        }
+      }
+
+      conn = build_conn()
+      conn = get(conn, "/playground/api", query: query, variables: variables)
+
+      assert json_response(conn, 200) == %{
+               "data" => %{
+                 "usersWithFilters" => [
+                   %{"username" => "test_1"},
+                   %{"username" => "test_2"},
+                   %{"username" => "test_3"}
+                 ]
+               }
+             }
+    end
+
+    # This is a bad test because it relys on when the seed data was inserted.
+    test "scalar datetime throws bad input string error" do
+      query = """
+      query ($filter: UserFilter) {
+        usersWithFilters (filter: $filter) {
+          username
+        }
+      }
+      """
+
+      variables = %{
+        filter: %{
+          added_before: "not-a-date"
+        }
+      }
+
+      conn = build_conn()
+      conn = get(conn, "/playground/api", query: query, variables: variables)
+
+      assert json_response(conn, 200) == %{
+               "errors" => [
+                 %{
+                   "locations" => [%{"column" => 0, "line" => 2}],
+                   "message" =>
+                     "Argument \"filter\" has invalid value $filter.\nIn field \"added_before\": Expected type \"DateTime\", found \"not-a-date\"."
+                 }
+               ]
+             }
+    end
+  end
 end
