@@ -24,6 +24,7 @@ defmodule Api.Schema do
   """
 
   import_types(Api.Schema.ObjectTypes.UserTypes)
+  import_types(Api.Schema.Queries.UserQueries)
 
   query do
     # The second arg defines the field type. This is by default a scalar value.
@@ -40,15 +41,7 @@ defmodule Api.Schema do
       end)
     end
 
-    field(:users, list_of(:user)) do
-      @desc "Matching a username"
-      arg(:matching, :string)
-
-      @desc "Orders by username"
-      arg(:order, type: :sort_order, default_value: :asc)
-
-      resolve(&UserResolver.find_all_users/3)
-    end
+    import_fields(:user_queries)
 
     field(:users_with_filters, list_of(:user)) do
       arg(:filter, :user_filter)

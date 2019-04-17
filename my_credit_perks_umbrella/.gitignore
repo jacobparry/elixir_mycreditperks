@@ -20,5 +20,5 @@ erl_crash.dump
 *.ez
 
 # Ignore VS Code files
-/.vscode
-/.elixir_ls
+/.vscode/
+/.elixir_ls/
