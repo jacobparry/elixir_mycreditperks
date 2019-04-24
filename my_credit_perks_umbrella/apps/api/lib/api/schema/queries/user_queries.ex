@@ -13,5 +13,20 @@ defmodule Api.Schema.Queries.UserQueries do
 
       resolve(&UserResolver.find_all_users/3)
     end
+
+    field(:users_with_filters, list_of(:user)) do
+      arg(:filter, :user_filter)
+      resolve(&UserResolver.find_all_users_with_filters/3)
+    end
+
+    field(:users_with_non_null_filters, list_of(:user)) do
+      arg(:filter, non_null(:user_filter))
+      resolve(&UserResolver.find_all_users_with_filters/3)
+    end
+
+    field(:users_with_non_null_inner_filters, list_of(:user)) do
+      arg(:filter, non_null(:user_filter_non_null_field))
+      resolve(&UserResolver.find_all_users_with_filters/3)
+    end
   end
 end

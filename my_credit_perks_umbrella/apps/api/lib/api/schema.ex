@@ -4,15 +4,8 @@ defmodule Api.Schema do
 
   alias Db.Repo
 
-  alias Api.Resolvers.{
-    CardResolver,
-    UserResolver
-  }
-
-  alias Db.Models.{
-    User,
-    Card
-  }
+  alias Api.Resolvers.{CardResolver, UserResolver}
+  alias Db.Models.{User, Card}
 
   """
   Keep in mind that your API and the underlying data representations
@@ -24,6 +17,7 @@ defmodule Api.Schema do
   """
 
   import_types(Api.Schema.Queries.UserQueries)
+  import_types(Api.Schema.Queries.CardQueries)
 
   import_types(Api.Schema.ObjectTypes.UserTypes)
   import_types(Api.Schema.ObjectTypes.CardTypes)
@@ -46,25 +40,7 @@ defmodule Api.Schema do
     end
 
     import_fields(:user_queries)
-
-    field(:users_with_filters, list_of(:user)) do
-      arg(:filter, :user_filter)
-      resolve(&UserResolver.find_all_users_with_filters/3)
-    end
-
-    field(:users_with_non_null_filters, list_of(:user)) do
-      arg(:filter, non_null(:user_filter))
-      resolve(&UserResolver.find_all_users_with_filters/3)
-    end
-
-    field(:users_with_non_null_inner_filters, list_of(:user)) do
-      arg(:filter, non_null(:user_filter_non_null_field))
-      resolve(&UserResolver.find_all_users_with_filters/3)
-    end
-
-    field(:cards, list_of(:card)) do
-      resolve(&CardResolver.find_all_cards/3)
-    end
+    import_fields(:card_queries)
   end
 end
 
