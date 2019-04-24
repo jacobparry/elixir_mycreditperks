@@ -1,19 +1,21 @@
-defmodule Db.Models.Card do
+defmodule Db.Models.Perk do
   use Ecto.Schema
 
   import Ecto.Changeset
 
-  schema "cards" do
-    ###### 2.1-ecto-models-card
-    field(:name)
-    timestamps()
-    ###################
-
+  schema "perks" do
     ###### 2.3-ecto-models-perks
-    has_many(:perks, Db.Models.Perk)
+    field(:type, :string)
+    field(:description, :string)
+    timestamps()
+
+    belongs_to(:card, Db.Models.Card)
     ###################
 
-    @required_fields [:name]
+    @required_fields [
+      :type,
+      :description
+    ]
     @optional_fields []
 
     def changeset(card, params \\ %{}) do
