@@ -175,3 +175,30 @@ defmodule Db.Models.User do
   end
 end
 ```
+
+# 2.1--ecto-models-card
+1. Create a `Card` Model
+  * Create a new folder and file `models/card.ex` at `[umbrella_app]/apps/[database_app]/lib/models/card.ex`
+```
+defmodule Db.Models.Card do
+  use Ecto.Schema
+
+  import Ecto.Changeset
+
+  schema "cards" do
+    ###### 2.1-ecto-models-card
+    field(:name)
+    timestamps()
+    ###################
+
+    @required_fields [:name]
+    @optional_fields []
+
+    def changeset(card, params \\ %{}) do
+      card
+      |> cast(params, @required_fields ++ @optional_fields)
+      |> validate_required(@required_fields)
+    end
+  end
+end
+```
