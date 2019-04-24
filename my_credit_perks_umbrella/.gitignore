@@ -19,6 +19,11 @@ erl_crash.dump
 # Also ignore archive artifacts (built via "mix archive.build").
 *.ez
 
+<<<<<<< HEAD
 # Ignore VS Code files
 /.vscode/
 /.elixir_ls/
+=======
+/.elixir_ls/
+/.vscode/
+>>>>>>> 5.0-adding-flexibility-import-types
