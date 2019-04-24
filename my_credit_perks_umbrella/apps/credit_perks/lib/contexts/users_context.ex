@@ -34,6 +34,15 @@ defmodule CreditPerks.Contexts.UsersContext do
     Repo.insert(user)
   end
 
+  def create_user(params) do
+    IO.inspect(params)
+
+    %User{}
+    |> User.changeset(params)
+    |> Repo.insert()
+    |> IO.inspect()
+  end
+
   def update(user) do
     Repo.update(user)
   end
