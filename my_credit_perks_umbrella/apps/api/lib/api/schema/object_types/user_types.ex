@@ -30,4 +30,12 @@ defmodule Api.Schema.ObjectTypes.UserTypes do
     @desc "Filter by added_after date"
     field(:added_after, :date_time)
   end
+
+  input_object :user_filter_non_null_field do
+    @desc "Matching a username"
+    field(:matching, non_null(:string))
+
+    @desc "Orders by username"
+    field(:order, type: :sort_order, default_value: :asc)
+  end
 end
