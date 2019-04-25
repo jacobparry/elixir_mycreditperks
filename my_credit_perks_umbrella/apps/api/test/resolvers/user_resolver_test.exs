@@ -30,40 +30,6 @@ defmodule Api.Resolvers.UserResolverTest do
   }
   """
 
-  @query_infinite """
-  {
-    users {
-      userCards {
-        usersThatHaveCard {
-          userCards {
-            usersThatHaveCard {
-              userCards {
-                id
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  """
-
-  @query_matching """
-  {
-    users (matching: "1") {
-      username
-    }
-  }
-  """
-
-  @query_matching_bad_value """
-  {
-    users (matching: 123) {
-      username
-    }
-  }
-  """
-
   test "find_all_users" do
     conn = build_conn()
     conn = get(conn, "/playground/api", query: @query)
@@ -83,6 +49,13 @@ defmodule Api.Resolvers.UserResolverTest do
     end)
   end
 
+  @query_matching """
+  {
+    users (matching: "1") {
+      username
+    }
+  }
+  """
   test "users field returns users filtered by username" do
     conn = build_conn()
     conn = get(conn, "/playground/api", query: @query_matching)
@@ -101,11 +74,119 @@ defmodule Api.Resolvers.UserResolverTest do
            }
   end
 
+  @query_matching_bad_value """
+  {
+    users (matching: 123) {
+      username
+    }
+  }
+  """
   test "users field returns errors when using a bad value" do
     conn = build_conn()
     conn = get(conn, "/playground/api", query: @query_matching_bad_value)
     response = json_response(conn, 200)
     assert %{"errors" => [%{"message" => message}]} = json_response(conn, 200)
     assert message == "Argument \"matching\" has invalid value 123."
+  end
+
+  @query_matching_variables """
+  query ($term: String) {
+    users (matching: $term) {
+      username
+    }
+  }
+  """
+  @variables %{"term" => "1"}
+  test "users field filtering with graphql variables" do
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: @query_matching_variables, variables: @variables)
+    response = json_response(conn, 200)
+    returned_users = response["data"]["users"]
+    user = hd(returned_users)
+    assert length(returned_users) == 1
+    assert user == %{"username" => "test_1"}
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "users" => [
+                 %{"username" => "test_1"}
+               ]
+             }
+           }
+  end
+
+  test "user ordering using sort_order enum asc by default" do
+    query = """
+    {
+      users {
+        username
+      }
+    }
+    """
+
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: query)
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "users" => [
+                 %{"username" => "test_1"},
+                 %{"username" => "test_2"},
+                 %{"username" => "test_3"}
+               ]
+             }
+           }
+  end
+
+  test "user ordering using sort_order enum desc" do
+    # By convention, enum values are passed in all uppercase letters.
+    query = """
+    {
+      users (order: DESC) {
+        username
+      }
+    }
+    """
+
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: query)
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "users" => [
+                 %{"username" => "test_3"},
+                 %{"username" => "test_2"},
+                 %{"username" => "test_1"}
+               ]
+             }
+           }
+  end
+
+  test "user ordering using sort_order enum desc with variable" do
+    # By convention, enum values are passed in all uppercase letters.
+    query = """
+    query ($order: SortOrder!) {
+      users (order: $order) {
+        username
+      }
+    }
+    """
+
+    variables = %{
+      order: "DESC"
+    }
+
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: query, variables: variables)
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "users" => [
+                 %{"username" => "test_3"},
+                 %{"username" => "test_2"},
+                 %{"username" => "test_1"}
+               ]
+             }
+           }
   end
 end
