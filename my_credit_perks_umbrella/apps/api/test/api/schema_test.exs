@@ -1,5 +1,5 @@
 defmodule Api.SchemaTest do
-  use ExUnit.Case
+  # use ExUnit.Case
 
   # UiWeb.ConnCase allows us to build a connection and post it against an api endpoint
   # This allows us to test our GraphQL queries
@@ -7,17 +7,17 @@ defmodule Api.SchemaTest do
 
   @query """
   {
-    health
+    healthy
   }
   """
 
   describe "query" do
-    test "health" do
+    test "healthy" do
       conn = build_conn()
       conn = get(conn, "/playground/api", query: @query)
 
       response = json_response(conn, 200)
-      assert response == %{"data" => %{"health" => "up"}}
+      assert response == %{"data" => %{"healthy" => "yup"}}
     end
   end
 end

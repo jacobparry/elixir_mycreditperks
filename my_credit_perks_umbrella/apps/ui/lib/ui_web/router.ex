@@ -28,7 +28,8 @@ defmodule UiWeb.Router do
     # This enables the "in-browser" IDE for writing GraphQL things.
     forward("/graphiql", Absinthe.Plug.GraphiQL,
       schema: Api.Schema,
-      interface: :playground
+      interface: :playground,
+      pipeline: {ApolloTracing.Pipeline, :plug}
     )
   end
 

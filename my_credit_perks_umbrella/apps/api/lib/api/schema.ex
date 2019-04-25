@@ -1,11 +1,11 @@
 defmodule Api.Schema do
   use Absinthe.Schema
+  use ApolloTracing
 
   alias Db.Repo
 
-  alias Db.Models.{
-    User
-  }
+  alias Api.Resolvers.{CardResolver, UserResolver}
+  alias Db.Models.{User, Card}
 
   """
   Keep in mind that your API and the underlying data representations
@@ -15,6 +15,16 @@ defmodule Api.Schema do
   service) contains the associated data, transforming it before it’s
   transmitted to API users.
   """
+
+  import_types(Api.Schema.Queries.UserQueries)
+  import_types(Api.Schema.Queries.CardQueries)
+
+  import_types(Api.Schema.Mutations.UserMutations)
+
+  import_types(Api.Schema.ObjectTypes.UserTypes)
+  import_types(Api.Schema.ObjectTypes.CardTypes)
+  import_types(Api.Schema.ObjectTypes.DateTime)
+  import_types(Api.Schema.ObjectTypes.SortOrder)
 
   query do
     # The second arg defines the field type. This is by default a scalar value.
@@ -31,19 +41,12 @@ defmodule Api.Schema do
       end)
     end
 
-    field(:users, list_of(:user)) do
-      resolve(fn _, _, _ ->
-        {:ok, Repo.all(User)}
-      end)
-    end
+    import_fields(:user_queries)
+    import_fields(:card_queries)
   end
 
-  object :user do
-    field(:id, :id)
-    field(:username, :string)
-    field(:password, :string)
-    field(:email, :string)
-    field(:age, :integer)
+  mutation do
+    import_fields(:user_mutations)
   end
 end
 
