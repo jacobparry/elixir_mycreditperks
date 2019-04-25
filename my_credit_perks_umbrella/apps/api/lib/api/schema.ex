@@ -3,8 +3,14 @@ defmodule Api.Schema do
 
   alias Db.Repo
 
+  alias Api.Resolvers.{
+    CardResolver,
+    UserResolver
+  }
+
   alias Db.Models.{
-    User
+    User,
+    Card
   }
 
   """
@@ -32,9 +38,11 @@ defmodule Api.Schema do
     end
 
     field(:users, list_of(:user)) do
-      resolve(fn _, _, _ ->
-        {:ok, Repo.all(User)}
-      end)
+      resolve(&UserResolver.find_all_users/3)
+    end
+
+    field(:cards, list_of(:card)) do
+      resolve(&CardResolver.find_all_cards/3)
     end
   end
 
@@ -44,6 +52,19 @@ defmodule Api.Schema do
     field(:password, :string)
     field(:email, :string)
     field(:age, :integer)
+
+    field(:user_cards, list_of(:card)) do
+      resolve(&UserResolver.find_cards_for_user/3)
+    end
+  end
+
+  object :card do
+    field(:id, :id)
+    field(:name, :string)
+
+    field(:users_that_have_card, list_of(:user)) do
+      resolve(&CardResolver.find_users_for_card/3)
+    end
   end
 end
 

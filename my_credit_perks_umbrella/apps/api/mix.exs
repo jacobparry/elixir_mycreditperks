@@ -10,6 +10,7 @@ defmodule Api.MixProject do
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
       elixir: "~> 1.7",
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -23,6 +24,10 @@ defmodule Api.MixProject do
     ]
   end
 
+  # Specifies which paths to compile per environment.
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
+
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
@@ -34,6 +39,7 @@ defmodule Api.MixProject do
       {:absinthe_plug, "~> 1.4"},
       {:absinthe_phoenix, "~> 1.4"},
       {:absinthe_relay, "~> 1.4"},
+      {:db, in_umbrella: true},
       {:ui, in_umbrella: true}
     ]
   end

@@ -9,8 +9,9 @@ defmodule Db.Seeds do
   alias Db.Repo
 
   def run() do
-    seed_users()
-    seed_cards()
+    users = seed_users()
+    cards = seed_cards()
+    seed_user_cards(users, cards)
   end
 
   defp seed_users() do
@@ -55,5 +56,17 @@ defmodule Db.Seeds do
       Enum.map(cards, fn card ->
         Repo.insert(card)
       end)
+  end
+
+  defp seed_user_cards(users, cards) do
+    Enum.map(users, fn {:ok, user} ->
+      Enum.map(cards, fn {:ok, card} ->
+        UserCard.changeset(%UserCard{}, %{
+          user_id: user.id,
+          card_id: card.id
+        })
+        |> Repo.insert()
+      end)
+    end)
   end
 end
