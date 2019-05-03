@@ -8,6 +8,11 @@ defmodule Api.Schema.Mutations.UserMutations do
       arg(:input, non_null(:create_user_input))
       resolve(&UserResolver.create_user/3)
     end
+
+    field :create_user_better_errors, :user do
+      arg(:input, non_null(:create_user_input))
+      resolve(&UserResolver.create_user_better_errors/3)
+    end
   end
 
   input_object :create_user_input do
