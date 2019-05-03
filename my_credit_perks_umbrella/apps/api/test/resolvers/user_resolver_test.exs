@@ -466,4 +466,60 @@ defmodule Api.Resolvers.UserResolverTest do
              }
            }
   end
+
+  test "create_user mutation can return both data and errors" do
+    mutation = """
+    mutation ($input1: CreateUserInput!, $input2: CreateUserInput!) {
+      newUser1: createUser (input: $input1) {
+        username
+        password
+        email
+        age
+      }
+      newUser2: createUser (input: $input2) {
+        username
+        password
+        email
+        age
+      }
+    }
+    """
+
+    variables = %{
+      input1: %{
+        username: "new_user_1",
+        password: "new_password_1",
+        email: "new_email_1@new.com",
+        age: 21
+      },
+      input2: %{
+        username: "new_user_1",
+        password: "new_password_1",
+        email: "new_email_1@new.com",
+        age: 21
+      }
+    }
+
+    conn = build_conn()
+    conn = post(conn, "/playground/api", query: mutation, variables: variables)
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "newUser1" => %{
+                 "username" => "new_user_1",
+                 "password" => "new_password_1",
+                 "email" => "new_email_1@new.com",
+                 "age" => 21
+               },
+               "newUser2" => nil
+             },
+             "errors" => [
+               %{
+                 "locations" => [%{"column" => 0, "line" => 8}],
+                 "message" => "Could not create user",
+                 "path" => ["newUser2"]
+               }
+             ]
+           }
+  end
 end
