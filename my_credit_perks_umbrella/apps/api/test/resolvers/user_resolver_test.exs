@@ -84,7 +84,7 @@ defmodule Api.Resolvers.UserResolverTest do
   test "users field returns errors when using a bad value" do
     conn = build_conn()
     conn = get(conn, "/playground/api", query: @query_matching_bad_value)
-    response = json_response(conn, 200)
+    _response = json_response(conn, 200)
     assert %{"errors" => [%{"message" => message}]} = json_response(conn, 200)
     assert message == "Argument \"matching\" has invalid value 123."
   end
@@ -343,5 +343,127 @@ defmodule Api.Resolvers.UserResolverTest do
                ]
              }
     end
+  end
+
+  test "create_user mutation" do
+    mutation = """
+    mutation ($input: CreateUserInput!) {
+      createUser (input: $input) {
+        username
+        password
+        email
+        age
+      }
+    }
+    """
+
+    variables = %{
+      input: %{
+        username: "new_user",
+        password: "new_password",
+        email: "new_email@new.com",
+        age: 21
+      }
+    }
+
+    conn = build_conn()
+    conn = post(conn, "/playground/api", query: mutation, variables: variables)
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "createUser" => %{
+                 "username" => "new_user",
+                 "password" => "new_password",
+                 "email" => "new_email@new.com",
+                 "age" => 21
+               }
+             }
+           }
+  end
+
+  test "create_user mutation with aliases" do
+    mutation = """
+    mutation ($input1: CreateUserInput!, $input2: CreateUserInput!) {
+      newUser1: createUser (input: $input1) {
+        username
+        password
+        email
+        age
+      }
+      newUser2: createUser (input: $input2) {
+        username
+        password
+        email
+        age
+      }
+    }
+    """
+
+    variables = %{
+      input1: %{
+        username: "new_user_1",
+        password: "new_password_1",
+        email: "new_email_1@new.com",
+        age: 21
+      },
+      input2: %{
+        username: "new_user_2",
+        password: "new_password_2",
+        email: "new_email_2@new.com",
+        age: 12
+      }
+    }
+
+    conn = build_conn()
+    conn = post(conn, "/playground/api", query: mutation, variables: variables)
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "newUser1" => %{
+                 "username" => "new_user_1",
+                 "password" => "new_password_1",
+                 "email" => "new_email_1@new.com",
+                 "age" => 21
+               },
+               "newUser2" => %{
+                 "username" => "new_user_2",
+                 "password" => "new_password_2",
+                 "email" => "new_email_2@new.com",
+                 "age" => 12
+               }
+             }
+           }
+  end
+
+  test "query with aliases" do
+    query = """
+    query ($term1: String, $term2: String) {
+      user1: users (matching: $term1) {username}
+      user2: users (matching: $term2) {username}
+    }
+    """
+
+    variables = %{
+      term1: "1",
+      term2: "2"
+    }
+
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: query, variables: variables)
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "user1" => [
+                 %{
+                   "username" => "test_1"
+                 }
+               ],
+               "user2" => [
+                 %{
+                   "username" => "test_2"
+                 }
+               ]
+             }
+           }
   end
 end

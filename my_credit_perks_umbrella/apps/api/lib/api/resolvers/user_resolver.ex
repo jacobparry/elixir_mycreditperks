@@ -12,8 +12,6 @@ defmodule Api.Resolvers.UserResolver do
   alias Db.Repo
 
   def find_all_users(_parent, %{matching: matching} = _params, _resolution) do
-    IO.inspect("MATCHING")
-
     query =
       from(u in User,
         where: ilike(u.username, ^"%#{matching}%")
@@ -23,8 +21,6 @@ defmodule Api.Resolvers.UserResolver do
   end
 
   def find_all_users(_parent, %{order: order} = _params, _resolution) do
-    IO.inspect("ORDER")
-
     query =
       from(u in User,
         order_by: {^order, u.username}
@@ -34,14 +30,10 @@ defmodule Api.Resolvers.UserResolver do
   end
 
   def find_all_users(_parent, params, _resolution) do
-    IO.inspect("EVERYTHING")
-
     {:ok, Repo.all(User)}
   end
 
   def find_all_users_with_filters(_parent, %{filter: filters} = _params, _resolution) do
-    IO.inspect("FILTERS")
-
     query =
       from(u in User)
       |> matching_filter(filters[:matching])
