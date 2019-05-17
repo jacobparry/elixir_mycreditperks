@@ -29,7 +29,10 @@ defmodule UiWeb.Router do
     forward("/graphiql", Absinthe.Plug.GraphiQL,
       schema: Api.Schema,
       interface: :playground,
-      pipeline: {ApolloTracing.Pipeline, :plug}
+      pipeline: {ApolloTracing.Pipeline, :plug},
+
+      # Required for Absinthe Subscriptions
+      socket: UiWeb.UserSocket
     )
   end
 
