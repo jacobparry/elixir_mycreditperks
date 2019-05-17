@@ -24,4 +24,14 @@ defmodule Api.Resolvers.CardResolver do
         {:error, "Could not fetch users for card"}
     end
   end
+
+  def create_card(_parent, %{input: params} = _params, _) do
+    case CardsContext.create_card(params) do
+      {:ok, _} = success ->
+        success
+
+      {:error, _} ->
+        {:error, "Could not create card"}
+    end
+  end
 end
