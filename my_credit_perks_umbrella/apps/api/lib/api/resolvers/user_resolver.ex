@@ -67,7 +67,8 @@ defmodule Api.Resolvers.UserResolver do
 
   def create_user_better_errors(_parent, %{input: params} = _params, _resolution) do
     case UsersContext.create_user(params) do
-      {:ok, _user} = result ->
+      {:ok, user} = result ->
+        Absinthe.Subscription.publish(UiWeb.Endpoint, user, new_user: "*")
         result
 
       {:error, changeset} ->

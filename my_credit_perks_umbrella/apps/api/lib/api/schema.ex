@@ -17,6 +17,8 @@ defmodule Api.Schema do
   import_types(Api.Schema.Mutations.UserMutations)
   import_types(Api.Schema.Mutations.CardMutations)
 
+  import_types(Api.Schema.Subscriptions.UserSubscriptions)
+
   import_types(Api.Schema.ObjectTypes.UserTypes)
   import_types(Api.Schema.ObjectTypes.CardTypes)
   import_types(Api.Schema.ObjectTypes.DateTime)
@@ -44,6 +46,10 @@ defmodule Api.Schema do
   mutation do
     import_fields(:user_mutations)
     import_fields(:card_mutations)
+  end
+
+  subscription do
+    import_fields(:user_subscriptions)
   end
 end
 
