@@ -78,4 +78,19 @@ defmodule Api.Resolvers.UserResolver do
         {:error, "Could not create user"}
     end
   end
+
+  def create_user_better_errors(_parent, %{input: params} = _params, _resolution) do
+    case UsersContext.create_user(params) do
+      {:ok, user} = result ->
+        result
+
+      {:error, changeset} ->
+        {:error, message: "Could not create user", details: changeset_error_details(changeset)}
+    end
+  end
+
+  defp changeset_error_details(changeset) do
+    changeset
+    |> Ecto.Changeset.traverse_errors(fn {msg, _} -> msg end)
+  end
 end
