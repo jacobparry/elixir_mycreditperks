@@ -40,8 +40,8 @@ defmodule CreditPerks.Contexts.UsersContextTest do
 
     test "create/1 with valid data creates a user" do
       params = %{
-        username: "test_01",
-        password: "password_01",
+        username: "test_04",
+        password: "password_04",
         email: "email_01@test.com",
         age: 100
       }
@@ -53,6 +53,22 @@ defmodule CreditPerks.Contexts.UsersContextTest do
 
       assert %User{} = user
       assert user.username == params[:username]
+    end
+
+    test "create/1 fails if the user is not unique" do
+      params = %{
+        username: "test_01",
+        password: "password_01",
+        email: "email_01@test.com",
+        age: 100
+      }
+
+      {:error, %Ecto.Changeset{} = changeset} =
+        %User{}
+        |> User.changeset(params)
+        |> UsersContext.create()
+
+      assert [username: {"has already been taken", _}] = changeset.errors
     end
 
     test "create/1 with bad data does not create a user" do
