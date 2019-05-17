@@ -53,6 +53,16 @@ defmodule Api.Schema do
       resolve(&UserResolver.find_all_users_with_filters/3)
     end
 
+    field(:users_with_non_null_filters, list_of(:user)) do
+      arg(:filter, non_null(:user_filter))
+      resolve(&UserResolver.find_all_users_with_filters/3)
+    end
+
+    field(:users_with_non_null_inner_filters, list_of(:user)) do
+      arg(:filter, non_null(:user_filter_non_null_field))
+      resolve(&UserResolver.find_all_users_with_filters/3)
+    end
+
     field(:cards, list_of(:card)) do
       resolve(&CardResolver.find_all_cards/3)
     end
@@ -82,6 +92,14 @@ defmodule Api.Schema do
   input_object :user_filter do
     @desc "Matching a username"
     field(:matching, :string)
+
+    @desc "Orders by username"
+    field(:order, type: :sort_order, default_value: :asc)
+  end
+
+  input_object :user_filter_non_null_field do
+    @desc "Matching a username"
+    field(:matching, non_null(:string))
 
     @desc "Orders by username"
     field(:order, type: :sort_order, default_value: :asc)
