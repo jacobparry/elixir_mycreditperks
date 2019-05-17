@@ -74,6 +74,8 @@ defmodule Api.Schema do
     field(:password, :string)
     field(:email, :string)
     field(:age, :integer)
+    field(:inserted_at, :string)
+    field(:updated_at, :date_time)
 
     field(:user_cards, list_of(:card)) do
       resolve(&UserResolver.find_cards_for_user/3)
@@ -95,6 +97,12 @@ defmodule Api.Schema do
 
     @desc "Orders by username"
     field(:order, type: :sort_order, default_value: :asc)
+
+    @desc "Filter by added_before date"
+    field(:added_before, :date_time)
+
+    @desc "Filter by added_after date"
+    field(:added_after, :date_time)
   end
 
   input_object :user_filter_non_null_field do
@@ -109,6 +117,25 @@ defmodule Api.Schema do
   enum :sort_order do
     value(:asc)
     value(:desc)
+  end
+
+  scalar :date_time do
+    # Parse converts a value coming from the user into an Elixir term or returns :error
+    parse(fn input ->
+      with {:ok, date} <- Date.from_iso8601(input.value),
+           datetime <- Timex.to_datetime(date) do
+        {:ok, datetime}
+      else
+        _ -> :error
+      end
+    end)
+
+    # Serialize converts a Elixir term back into a value that can be returned via JSON
+    serialize(fn datetime ->
+      datetime
+      |> DateTime.from_naive!("Etc/UTC")
+      |> DateTime.to_iso8601()
+    end)
   end
 end
 
