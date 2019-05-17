@@ -21,7 +21,7 @@ defmodule Api.Resolvers.UserResolver do
   end
 
   def find_all_users(_parent, %{order: order} = _params, _resolution) do
-    IO.inspect("MATCHING")
+    IO.inspect("ORDER")
 
     query =
       from(u in User,
@@ -35,6 +35,33 @@ defmodule Api.Resolvers.UserResolver do
     IO.inspect("EVERYTHING")
 
     {:ok, Repo.all(User)}
+  end
+
+  def find_all_users_with_filters(_parent, %{filter: filters} = _params, _resolution) do
+    IO.inspect("FILTERS")
+
+    query =
+      from(u in User)
+      |> matching_filter(filters[:matching])
+      |> order_filter(filters[:order])
+
+    {:ok, Repo.all(query)}
+  end
+
+  def matching_filter(query, nil), do: query
+
+  def matching_filter(query, matching_string) do
+    from(u in query,
+      where: ilike(u.username, ^"%#{matching_string}%")
+    )
+  end
+
+  def order_filter(query, nil), do: query
+
+  def order_filter(query, order) do
+    from(u in query,
+      order_by: {^order, u.username}
+    )
   end
 
   def find_cards_for_user(parent, _params, _resolution) do

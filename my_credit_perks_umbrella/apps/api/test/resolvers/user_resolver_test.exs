@@ -189,4 +189,50 @@ defmodule Api.Resolvers.UserResolverTest do
              }
            }
   end
+
+  test "user filter input object" do
+    # By convention, enum values are passed in all uppercase letters.
+    query = """
+    query {
+      usersWithFilters (filter: {matching: "1"}) {
+        username
+      }
+    }
+    """
+
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: query)
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "usersWithFilters" => [
+                 %{"username" => "test_1"}
+               ]
+             }
+           }
+  end
+
+  test "user filter input object with desc" do
+    # By convention, enum values are passed in all uppercase letters.
+    query = """
+    query {
+      usersWithFilters (filter: {order: DESC}) {
+        username
+      }
+    }
+    """
+
+    conn = build_conn()
+    conn = get(conn, "/playground/api", query: query)
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "usersWithFilters" => [
+                 %{"username" => "test_3"},
+                 %{"username" => "test_2"},
+                 %{"username" => "test_1"}
+               ]
+             }
+           }
+  end
 end

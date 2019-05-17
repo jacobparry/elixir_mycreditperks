@@ -48,6 +48,11 @@ defmodule Api.Schema do
       resolve(&UserResolver.find_all_users/3)
     end
 
+    field(:users_with_filters, list_of(:user)) do
+      arg(:filter, :user_filter)
+      resolve(&UserResolver.find_all_users_with_filters/3)
+    end
+
     field(:cards, list_of(:card)) do
       resolve(&CardResolver.find_all_cards/3)
     end
@@ -72,6 +77,14 @@ defmodule Api.Schema do
     field(:users_that_have_card, list_of(:user)) do
       resolve(&CardResolver.find_users_for_card/3)
     end
+  end
+
+  input_object :user_filter do
+    @desc "Matching a username"
+    field(:matching, :string)
+
+    @desc "Orders by username"
+    field(:order, type: :sort_order, default_value: :asc)
   end
 
   # By convention, enum values are passed in all uppercase letters.
