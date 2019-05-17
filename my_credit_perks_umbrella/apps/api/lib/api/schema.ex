@@ -2,12 +2,7 @@ defmodule Api.Schema do
   use Absinthe.Schema
   use ApolloTracing
 
-  alias Db.Repo
-
-  alias Api.Resolvers.{CardResolver, UserResolver}
-  alias Db.Models.{User, Card}
-
-  """
+  @doc """
   Keep in mind that your API and the underlying data representations
   do not need to be identical, or even have the same structure.
   One of the main values in modeling GraphQL types is that they
