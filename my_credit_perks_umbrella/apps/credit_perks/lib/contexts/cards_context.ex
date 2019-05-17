@@ -6,6 +6,7 @@ defmodule CreditPerks.Contexts.CardsContext do
   import Ecto.Query, warn: false
   alias Db.Repo
   alias Db.Models.Card
+  alias Db.Models.UserCard
 
   @doc """
   Returns the list of cards.
@@ -18,6 +19,10 @@ defmodule CreditPerks.Contexts.CardsContext do
   """
   def list_cards do
     Repo.all(from(Card))
+  end
+
+  def find_all_cards do
+    {:ok, list_cards()}
   end
 
   @doc """
@@ -123,5 +128,16 @@ defmodule CreditPerks.Contexts.CardsContext do
   """
   def change_card(%Card{} = card) do
     Card.changeset(card, %{})
+  end
+
+  def find_users_for_card(%Card{} = card) do
+    query =
+      from(uc in UserCard,
+        join: u in assoc(uc, :user),
+        where: uc.card_id == ^card.id,
+        select: u
+      )
+
+    {:ok, Repo.all(query)}
   end
 end

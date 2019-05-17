@@ -1,71 +1,58 @@
 defmodule Api.Resolvers.UserResolver do
-  import Ecto.Query
+  @moduledoc """
+  Resolver that handles getting information regarding the User Struct
+  """
 
   alias CreditPerks.Contexts.UsersContext
 
-  alias Db.Models.{
-    User,
-    UserCard
-  }
+  def find_all_users(_parent, %{matching: _matching} = params, _resolution) do
+    case UsersContext.find_all_users(params) do
+      {:ok, _} = success ->
+        success
 
-  alias Db.Repo
-
-  def find_all_users(_parent, %{matching: matching} = _params, _resolution) do
-    query =
-      from(u in User,
-        where: ilike(u.username, ^"%#{matching}%")
-      )
-
-    {:ok, Repo.all(query)}
+      {:error, _} ->
+        {:error, "Could not fetch all users"}
+    end
   end
 
-  def find_all_users(_parent, %{order: order} = _params, _resolution) do
-    query =
-      from(u in User,
-        order_by: {^order, u.username}
-      )
+  def find_all_users(_parent, %{order: _order} = params, _resolution) do
+    case UsersContext.find_all_users(params) do
+      {:ok, _} = success ->
+        success
 
-    {:ok, Repo.all(query)}
+      {:error, _} ->
+        {:error, "Could not fetch all users"}
+    end
   end
 
   def find_all_users(_parent, _params, _resolution) do
-    {:ok, Repo.all(User)}
+    case UsersContext.find_all_users(%{}) do
+      {:ok, _} = success ->
+        success
+
+      {:error, _} ->
+        {:error, "Could not fetch all users"}
+    end
   end
 
-  def find_all_users_with_filters(_parent, %{filter: filters} = _params, _resolution) do
-    query =
-      from(u in User)
-      |> matching_filter(filters[:matching])
-      |> order_filter(filters[:order])
+  def find_all_users_with_filters(_parent, params, _resolution) do
+    case UsersContext.find_all_users_with_filters(params) do
+      {:ok, _} = success ->
+        success
 
-    {:ok, Repo.all(query)}
-  end
-
-  def matching_filter(query, nil), do: query
-
-  def matching_filter(query, matching_string) do
-    from(u in query,
-      where: ilike(u.username, ^"%#{matching_string}%")
-    )
-  end
-
-  def order_filter(query, nil), do: query
-
-  def order_filter(query, order) do
-    from(u in query,
-      order_by: {^order, u.username}
-    )
+      {:error, _} ->
+        {:error, "Could not fetch all users with filters"}
+    end
   end
 
   def find_cards_for_user(parent, _params, _resolution) do
-    query =
-      from(uc in UserCard,
-        join: c in assoc(uc, :card),
-        where: uc.user_id == ^parent.id,
-        select: c
-      )
+    case UsersContext.find_cards_for_user(parent) do
+      {:ok, _} = success ->
+        success
 
-    {:ok, Repo.all(query)}
+      {:error, _} ->
+        {:error, "Could not cards for user"}
+    end
   end
 
   def create_user(_parent, %{input: params} = _params, _resolution) do
@@ -91,7 +78,6 @@ defmodule Api.Resolvers.UserResolver do
   def create_user_best_errors(_parent, %{input: params} = _params, _resolution) do
     case UsersContext.create_user(params) do
       {:ok, user} = _result ->
-        IO.inspect("BANG BANG")
         {:ok, %{user: user}}
 
       {:error, changeset} ->

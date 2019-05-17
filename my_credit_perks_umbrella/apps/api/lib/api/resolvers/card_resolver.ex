@@ -1,26 +1,27 @@
 defmodule Api.Resolvers.CardResolver do
-  import Ecto.Query
+  @moduledoc """
+    Resolver that handles getting information regarding the Card Struct
+  """
 
-  alias Db.Models.{
-    Card,
-    UserCard
-  }
-
-  alias Db.Repo
+  alias CreditPerks.Contexts.CardsContext
 
   def find_all_cards(_, _, _) do
-    {:ok, Repo.all(Card)}
+    case CardsContext.find_all_cards() do
+      {:ok, _} = success ->
+        success
+
+      {:error, _} ->
+        {:error, "Could not fetch all cards"}
+    end
   end
 
   def find_users_for_card(parent, _, _) do
-    query =
-      from(uc in UserCard,
-        join: u in assoc(uc, :user),
-        where: uc.card_id == ^parent.id,
-        select: u
-      )
+    case CardsContext.find_users_for_card(parent) do
+      {:ok, _} = success ->
+        success
 
-    Repo.all(query)
-    {:ok, Repo.all(query)}
+      {:error, _} ->
+        {:error, "Could not fetch users for card"}
+    end
   end
 end
