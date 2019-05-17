@@ -30,7 +30,7 @@ defmodule Api.Resolvers.CardResolver do
       {:ok, _} = success ->
         success
 
-      {:error, _} ->
+      {:error, changeset} ->
         {:error, message: "Could not create card", details: changeset_error_details(changeset)}
     end
   end
