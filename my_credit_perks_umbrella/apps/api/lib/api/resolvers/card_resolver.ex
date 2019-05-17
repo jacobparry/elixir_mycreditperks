@@ -34,4 +34,7 @@ defmodule Api.Resolvers.CardResolver do
         {:error, "Could not create card"}
     end
   end
+
+  # Create a function to add a card to a user.
+  # Hint: Follow the template of the other fuctions.
 end

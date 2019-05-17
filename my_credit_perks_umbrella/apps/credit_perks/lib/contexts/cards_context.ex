@@ -5,8 +5,11 @@ defmodule CreditPerks.Contexts.CardsContext do
 
   import Ecto.Query, warn: false
   alias Db.Repo
-  alias Db.Models.Card
-  alias Db.Models.UserCard
+
+  alias Db.Models.{
+    Card,
+    UserCard
+  }
 
   @doc """
   Returns the list of cards.
@@ -139,5 +142,11 @@ defmodule CreditPerks.Contexts.CardsContext do
       )
 
     {:ok, Repo.all(query)}
+  end
+
+  def add_user_to_card(_params) do
+    %UserCard{}
+    |> Card.changeset()
+    |> Repo.insert()
   end
 end
