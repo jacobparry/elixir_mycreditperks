@@ -1,6 +1,8 @@
 defmodule Api.Resolvers.UserResolver do
   import Ecto.Query
 
+  alias CreditPerks.Contexts.UsersContext
+
   alias Db.Models.{
     User,
     UserCard,
@@ -73,5 +75,15 @@ defmodule Api.Resolvers.UserResolver do
       )
 
     {:ok, Repo.all(query)}
+  end
+
+  def create_user(_parent, %{input: params} = _params, _resolution) do
+    case UsersContext.create_user(params) do
+      {:ok, user} = result ->
+        result
+
+      {:error, _} ->
+        {:error, "Could not create user"}
+    end
   end
 end

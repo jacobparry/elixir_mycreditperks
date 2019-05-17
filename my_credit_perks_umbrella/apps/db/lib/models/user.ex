@@ -24,5 +24,6 @@ defmodule Db.Models.User do
     user
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
+    |> IO.inspect()
   end
 end
