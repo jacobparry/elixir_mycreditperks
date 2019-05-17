@@ -35,6 +35,9 @@ defmodule Api.Resolvers.CardResolver do
     end
   end
 
+  # Create a function to add a card to a user.
+  # Hint: Follow the template of the other fuctions.
+
   defp changeset_error_details(changeset) do
     changeset
     |> Ecto.Changeset.traverse_errors(fn {msg, _} -> msg end)
