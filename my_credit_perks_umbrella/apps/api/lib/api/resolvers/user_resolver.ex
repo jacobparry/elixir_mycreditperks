@@ -5,8 +5,7 @@ defmodule Api.Resolvers.UserResolver do
 
   alias Db.Models.{
     User,
-    UserCard,
-    Card
+    UserCard
   }
 
   alias Db.Repo
@@ -29,7 +28,7 @@ defmodule Api.Resolvers.UserResolver do
     {:ok, Repo.all(query)}
   end
 
-  def find_all_users(_parent, params, _resolution) do
+  def find_all_users(_parent, _params, _resolution) do
     {:ok, Repo.all(User)}
   end
 
@@ -71,7 +70,7 @@ defmodule Api.Resolvers.UserResolver do
 
   def create_user(_parent, %{input: params} = _params, _resolution) do
     case UsersContext.create_user(params) do
-      {:ok, user} = result ->
+      {:ok, _user} = result ->
         result
 
       {:error, _} ->
@@ -81,7 +80,7 @@ defmodule Api.Resolvers.UserResolver do
 
   def create_user_better_errors(_parent, %{input: params} = _params, _resolution) do
     case UsersContext.create_user(params) do
-      {:ok, user} = result ->
+      {:ok, _user} = result ->
         result
 
       {:error, changeset} ->
@@ -89,8 +88,39 @@ defmodule Api.Resolvers.UserResolver do
     end
   end
 
+  def create_user_best_errors(_parent, %{input: params} = _params, _resolution) do
+    case UsersContext.create_user(params) do
+      {:ok, user} = _result ->
+        IO.inspect("BANG BANG")
+        {:ok, %{user: user}}
+
+      {:error, changeset} ->
+        {:ok, %{errors: transform_errors(changeset)}}
+    end
+  end
+
   defp changeset_error_details(changeset) do
     changeset
     |> Ecto.Changeset.traverse_errors(fn {msg, _} -> msg end)
+  end
+
+  defp transform_errors(%Ecto.Changeset{} = changeset) do
+    changeset
+    |> IO.inspect()
+    |> Ecto.Changeset.traverse_errors(&format_error/1)
+    |> Enum.map(fn {key, value} ->
+      %{key: key, message: value}
+    end)
+  end
+
+  @spec format_error(Ecto.Changeset.error()) :: String.t()
+  defp format_error({msg, opts}) do
+    Enum.reduce(
+      opts,
+      msg,
+      fn {key, value}, acc ->
+        String.replace(acc, "%{#{key}}", to_string(value))
+      end
+    )
   end
 end
