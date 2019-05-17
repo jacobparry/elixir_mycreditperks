@@ -23,6 +23,11 @@ defmodule Api.Schema do
   transmitted to API users.
   """
 
+  import_types(Api.Schema.ObjectTypes.UserTypes)
+  import_types(Api.Schema.ObjectTypes.CardTypes)
+  import_types(Api.Schema.ObjectTypes.DateTime)
+  import_types(Api.Schema.ObjectTypes.SortOrder)
+
   query do
     # The second arg defines the field type. This is by default a scalar value.
     # Absinthe has some defined build in: :integer, :float, :string, :boolean, :null, :id.
@@ -66,76 +71,6 @@ defmodule Api.Schema do
     field(:cards, list_of(:card)) do
       resolve(&CardResolver.find_all_cards/3)
     end
-  end
-
-  object :user do
-    field(:id, :id)
-    field(:username, :string)
-    field(:password, :string)
-    field(:email, :string)
-    field(:age, :integer)
-    field(:inserted_at, :string)
-    field(:updated_at, :date_time)
-
-    field(:user_cards, list_of(:card)) do
-      resolve(&UserResolver.find_cards_for_user/3)
-    end
-  end
-
-  object :card do
-    field(:id, :id)
-    field(:name, :string)
-
-    field(:users_that_have_card, list_of(:user)) do
-      resolve(&CardResolver.find_users_for_card/3)
-    end
-  end
-
-  input_object :user_filter do
-    @desc "Matching a username"
-    field(:matching, :string)
-
-    @desc "Orders by username"
-    field(:order, type: :sort_order, default_value: :asc)
-
-    @desc "Filter by added_before date"
-    field(:added_before, :date_time)
-
-    @desc "Filter by added_after date"
-    field(:added_after, :date_time)
-  end
-
-  input_object :user_filter_non_null_field do
-    @desc "Matching a username"
-    field(:matching, non_null(:string))
-
-    @desc "Orders by username"
-    field(:order, type: :sort_order, default_value: :asc)
-  end
-
-  # By convention, enum values are passed in all uppercase letters.
-  enum :sort_order do
-    value(:asc)
-    value(:desc)
-  end
-
-  scalar :date_time do
-    # Parse converts a value coming from the user into an Elixir term or returns :error
-    parse(fn input ->
-      with {:ok, date} <- Date.from_iso8601(input.value),
-           datetime <- Timex.to_datetime(date) do
-        {:ok, datetime}
-      else
-        _ -> :error
-      end
-    end)
-
-    # Serialize converts a Elixir term back into a value that can be returned via JSON
-    serialize(fn datetime ->
-      datetime
-      |> DateTime.from_naive!("Etc/UTC")
-      |> DateTime.to_iso8601()
-    end)
   end
 end
 
