@@ -31,7 +31,12 @@ defmodule Api.Resolvers.CardResolver do
         success
 
       {:error, _} ->
-        {:error, "Could not create card"}
+        {:error, message: "Could not create card", details: changeset_error_details(changeset)}
     end
+  end
+
+  defp changeset_error_details(changeset) do
+    changeset
+    |> Ecto.Changeset.traverse_errors(fn {msg, _} -> msg end)
   end
 end
