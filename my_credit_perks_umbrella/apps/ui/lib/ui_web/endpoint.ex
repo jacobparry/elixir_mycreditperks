@@ -1,5 +1,7 @@
 defmodule UiWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :ui
+
+  # Required for Absinthe Subscriptions
   use Absinthe.Phoenix.Endpoint
 
   socket("/socket", UiWeb.UserSocket,

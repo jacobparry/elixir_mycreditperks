@@ -15,6 +15,8 @@ defmodule Ui.Application do
       UiWeb.Endpoint,
       # Starts a worker by calling: Ui.Worker.start_link(arg)
       # {Ui.Worker, arg},
+
+      # Required for Absinthe Subscriptions
       supervisor(Absinthe.Subscription, [UiWeb.Endpoint])
     ]
 

@@ -1,6 +1,7 @@
 defmodule UiWeb.UserSocket do
   use Phoenix.Socket
 
+  # Required for Absinthe Subscriptions
   use Absinthe.Phoenix.Socket, schema: Api.Schema
 
   ## Channels
