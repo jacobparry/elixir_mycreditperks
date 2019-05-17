@@ -45,4 +45,23 @@ defmodule Api.Resolvers.CardResolverTest do
       assert length(returned_card["usersThatHaveCard"]) > 0
     end)
   end
+
+  test "create_card mutation" do
+    mutation = """
+    mutation {
+      createCard (input: {name: "Google Store"}) {
+        name
+      }
+    }
+    """
+
+    conn = build_conn()
+    conn = post(conn, "/playground/api", query: mutation)
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "createCard" => %{"name" => "Google Store"}
+             }
+           }
+  end
 end
