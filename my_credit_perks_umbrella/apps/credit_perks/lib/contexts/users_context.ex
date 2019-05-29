@@ -20,6 +20,16 @@ defmodule CreditPerks.Contexts.UsersContext do
     Repo.one(query)
   end
 
+  def find_user_by_id(id) do
+    case get_by_id(id) do
+      %User{} = user ->
+        {:ok, user}
+
+      _ ->
+        {:error, "Could not find user"}
+    end
+  end
+
   def any? do
     count =
       Repo.one(
@@ -43,6 +53,14 @@ defmodule CreditPerks.Contexts.UsersContext do
 
   def update(user) do
     Repo.update(user)
+  end
+
+  def update_user(%{id: id} = params) do
+    {:ok, user} = find_user_by_id(id)
+
+    user
+    |> User.changeset(params)
+    |> Repo.update()
   end
 
   def delete(user) do
