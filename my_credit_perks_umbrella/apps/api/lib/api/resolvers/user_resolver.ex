@@ -76,6 +76,12 @@ defmodule Api.Resolvers.UserResolver do
     end
   end
 
+  def create_user_with_middleware(_parent, %{input: params} = _params, _resolution) do
+    with {:ok, user} <- UsersContext.create_user(params) do
+      {:ok, %{user: user}}
+    end
+  end
+
   def create_user_best_errors(_parent, %{input: params} = _params, _resolution) do
     case UsersContext.create_user(params) do
       {:ok, user} = _result ->
