@@ -97,6 +97,16 @@ defmodule Api.Resolvers.UserResolver do
     end
   end
 
+  def update_user_trigger(_parent, %{input: params} = _params, _resolution) do
+    case UsersContext.update_user(params) do
+      {:ok, _user} = result ->
+        result
+
+      {:error, changeset} ->
+        {:error, message: "Could not update user", details: changeset_error_details(changeset)}
+    end
+  end
+
   defp changeset_error_details(changeset) do
     changeset
     |> Ecto.Changeset.traverse_errors(fn {msg, _} -> msg end)
