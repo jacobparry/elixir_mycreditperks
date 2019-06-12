@@ -35,6 +35,11 @@ defmodule Api.Schema.Mutations.UserMutations do
       arg(:input, non_null(:update_user_input))
       resolve(&UserResolver.update_user_trigger/3)
     end
+
+    field :login_user, :session do
+      arg(:input, non_null(:login_input))
+      resolve(&UserResolver.login_user/3)
+    end
   end
 
   input_object :update_user_input do

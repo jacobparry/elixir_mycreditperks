@@ -7,6 +7,7 @@ defmodule Api.Schema.ObjectTypes.UserTypes do
     field(:id, :id)
     field(:username, :string)
     field(:password, :string)
+    field(:new_password, :string)
     field(:email, :string)
     field(:age, :integer)
     field(:inserted_at, :string)
@@ -15,6 +16,21 @@ defmodule Api.Schema.ObjectTypes.UserTypes do
     field(:user_cards, list_of(:card)) do
       resolve(&UserResolver.find_cards_for_user/3)
     end
+  end
+
+  object :session do
+    field(:token, :string)
+    field(:user, :user)
+  end
+
+  enum :role do
+    value(:admin)
+    value(:employee)
+  end
+
+  input_object :login_input do
+    field(:username, non_null(:string))
+    field(:password, non_null(:string))
   end
 
   input_object :user_filter do

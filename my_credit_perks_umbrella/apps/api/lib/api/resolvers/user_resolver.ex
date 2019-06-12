@@ -113,6 +113,18 @@ defmodule Api.Resolvers.UserResolver do
     end
   end
 
+  def login_user(_parent, %{input: %{username: username, password: password}} = args, _resolution) do
+    case UsersContext.authenticate_user(username, password) do
+      {:ok, user} ->
+        token = UiWeb.Authentication.sign(%{id: user.id, role: user.role})
+        {:ok, %{token: token, user: user}}
+
+      error ->
+        IO.inspect(error)
+        {:error, "Incorrect credentials"}
+    end
+  end
+
   defp changeset_error_details(changeset) do
     changeset
     |> Ecto.Changeset.traverse_errors(fn {msg, _} -> msg end)

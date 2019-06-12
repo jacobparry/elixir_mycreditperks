@@ -1,11 +1,29 @@
 defmodule CreditPerks.Contexts.UsersContext do
   import Ecto.Query
+
+  alias Comeonin.Ecto.Password
   alias Db.Repo
 
   alias Db.Models.{
     User,
     UserCard
   }
+
+  def get_user_by_username(username) do
+    Repo.get_by(User, username: username)
+  end
+
+  def authenticate_user(username, password) do
+    user = get_user_by_username(username)
+
+    with %{new_password: pass_to_validate} <- user,
+         true <- Password.valid?(password, pass_to_validate) do
+      {:ok, user}
+    else
+      _ ->
+        {:error, "Could not authenticate user"}
+    end
+  end
 
   def get_all do
     Repo.all(from(User))
