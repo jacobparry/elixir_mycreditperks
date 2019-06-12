@@ -55,10 +55,10 @@ defmodule Api.Schema do
   end
 
   def middleware(middleware, field, object) do
-    IO.inspect(
-      field_identifier: field.identifier,
-      object_identifier: object.identifier
-    )
+    # IO.inspect(
+    #   field_identifier: field.identifier,
+    #   object_identifier: object.identifier
+    # )
 
     middleware
     |> add(:changeset_errors, field, object)
