@@ -11,12 +11,16 @@ defmodule Db.Models.User do
     field(:age, :integer)
     timestamps()
     ###################
+    field(:new_password, Comeonin.Ecto.Password)
+    field(:role, :string)
   end
 
   @required_fields [
     :username,
     :password,
-    :email
+    :email,
+    :new_password,
+    :role
   ]
   @optional_fields [:age]
 

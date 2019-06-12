@@ -19,23 +19,33 @@ defmodule Db.Seeds do
       User.changeset(%User{}, %{
         username: "test_1",
         password: "very_secure_password",
-        email: "test_1@test.com"
+        email: "test_1@test.com",
+        age: 21,
+        role: "ADMIN",
+        new_password: "strong_password"
       }),
       User.changeset(%User{}, %{
         username: "test_2",
         password: "very_secure_password",
-        email: "test_2@test.com"
+        email: "test_2@test.com",
+        age: 16,
+        role: "EMPLOYEE",
+        new_password: "strong_password"
       }),
       User.changeset(%User{}, %{
         username: "test_3",
         password: "very_secure_password",
-        email: "test_3@test.com"
+        email: "test_3@test.com",
+        age: 33,
+        role: "EMPLOYEE",
+        new_password: "strong_password"
       })
     ]
 
     inserted_users =
       Enum.map(users, fn user ->
         Repo.insert(user)
+        |> IO.inspect()
       end)
   end
 
