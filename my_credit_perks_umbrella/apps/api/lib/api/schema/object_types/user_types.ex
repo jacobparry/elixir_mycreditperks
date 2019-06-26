@@ -18,6 +18,36 @@ defmodule Api.Schema.ObjectTypes.UserTypes do
     end
   end
 
+  interface :other_user do
+    field(:username, :string)
+    field(:role, :string)
+
+    resolve_type(fn
+      %{role: "ADMIN"}, _ -> :admin
+      %{role: "EMPLOYEE"}, _ -> :employee
+    end)
+  end
+
+  object :admin do
+    interface(:other_user)
+    field(:username, :string)
+    field(:role, :string)
+    field(:age, :integer)
+
+    field(:user_cards, list_of(:card)) do
+      resolve(&UserResolver.find_cards_for_user/3)
+    end
+  end
+
+  object :employee do
+    interface(:other_user)
+
+    field(:username, :string)
+    field(:role, :string)
+    field(:inserted_at, :string)
+    field(:updated_at, :date_time)
+  end
+
   object :session do
     field(:token, :string)
     field(:user, :user)
