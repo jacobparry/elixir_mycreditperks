@@ -1,6 +1,8 @@
 defmodule Api.Schema do
   use Absinthe.Schema
-  use ApolloTracing
+  # use ApolloTracing
+
+  alias Api.Schema.Middleware
 
   @doc """
   Keep in mind that your API and the underlying data representations
@@ -50,6 +52,29 @@ defmodule Api.Schema do
 
   subscription do
     import_fields(:user_subscriptions)
+  end
+
+  def middleware(middleware, field, object) do
+    IO.inspect(
+      field_identifier: field.identifier,
+      object_identifier: object.identifier
+    )
+
+    middleware
+    |> add(:changeset_errors, field, object)
+    |> add(:apollo_tracing, field, object)
+  end
+
+  defp add(middleware, :apollo_tracing, _field, _object) do
+    middleware ++ [ApolloTracing.Middleware.Tracing]
+  end
+
+  defp add(middleware, :changeset_errors, field, %{identifier: :mutation}) do
+    middleware ++ [Middleware.ChangesetErrors]
+  end
+
+  defp add(middleware, :changeset_errors, _field, _object) do
+    middleware
   end
 end
 
