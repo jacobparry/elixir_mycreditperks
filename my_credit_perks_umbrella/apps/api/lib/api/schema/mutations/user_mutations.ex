@@ -15,6 +15,11 @@ defmodule Api.Schema.Mutations.UserMutations do
       resolve(&UserResolver.create_user_better_errors/3)
     end
 
+    field :create_user_restricted, :user do
+      arg(:input, non_null(:create_user_input))
+      resolve(&UserResolver.create_user_restricted/3)
+    end
+
     field :create_user_with_middleware, :create_user_result do
       arg(:input, non_null(:create_user_input_with_nulls))
       resolve(&UserResolver.create_user_with_middleware/3)
@@ -55,8 +60,8 @@ defmodule Api.Schema.Mutations.UserMutations do
     field(:password, non_null(:string))
     field(:email, non_null(:string))
     field(:age, :integer)
-    field(:new_password, :string)
-    field(:role, :string)
+    field(:role, non_null(:string))
+    field(:new_password, non_null(:string))
   end
 
   input_object :create_user_input_with_nulls do

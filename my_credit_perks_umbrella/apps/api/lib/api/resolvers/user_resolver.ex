@@ -76,6 +76,27 @@ defmodule Api.Resolvers.UserResolver do
     end
   end
 
+  def create_user_restricted(
+        _parent,
+        %{input: params} = _params,
+        %{context: context} = _resolution
+      ) do
+    case context do
+      %{current_user: %{role: "ADMIN"}} ->
+        case UsersContext.create_user(params) do
+          {:ok, user} = result ->
+            result
+
+          {:error, changeset} ->
+            {:error,
+             message: "Could not create user", details: changeset_error_details(changeset)}
+        end
+
+      _ ->
+        {:error, "Unauthorized"}
+    end
+  end
+
   def create_user_with_middleware(_parent, %{input: params} = _params, _resolution) do
     with {:ok, user} <- UsersContext.create_user(params) do
       {:ok, %{user: user}}
