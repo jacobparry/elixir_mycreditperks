@@ -22,7 +22,7 @@ defmodule Db.Seeds do
         email: "test_1@test.com",
         age: 21,
         role: "ADMIN",
-        new_password: "strong_password"
+        new_password: "strong_password1"
       }),
       User.changeset(%User{}, %{
         username: "test_2",
@@ -30,7 +30,7 @@ defmodule Db.Seeds do
         email: "test_2@test.com",
         age: 16,
         role: "EMPLOYEE",
-        new_password: "strong_password"
+        new_password: "strong_password2"
       }),
       User.changeset(%User{}, %{
         username: "test_3",
@@ -38,7 +38,7 @@ defmodule Db.Seeds do
         email: "test_3@test.com",
         age: 33,
         role: "EMPLOYEE",
-        new_password: "strong_password"
+        new_password: "strong_password3"
       })
     ]
 
