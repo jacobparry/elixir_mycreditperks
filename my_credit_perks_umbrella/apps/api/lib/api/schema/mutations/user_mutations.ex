@@ -2,6 +2,7 @@ defmodule Api.Schema.Mutations.UserMutations do
   use Absinthe.Schema.Notation
 
   alias Api.Resolvers.UserResolver
+  alias Api.Schema.Middleware
 
   object :user_mutations do
     field :create_user, :user do
@@ -12,6 +13,12 @@ defmodule Api.Schema.Mutations.UserMutations do
     field :create_user_better_errors, :user do
       arg(:input, non_null(:create_user_input))
       resolve(&UserResolver.create_user_better_errors/3)
+    end
+
+    field :create_user_with_middleware, :create_user_result do
+      arg(:input, non_null(:create_user_input_with_nulls))
+      resolve(&UserResolver.create_user_with_middleware/3)
+      middleware(Middleware.ChangesetErrors)
     end
 
     field :create_user_best_errors, :create_user_result do
