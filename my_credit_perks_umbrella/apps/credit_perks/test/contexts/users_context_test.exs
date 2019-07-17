@@ -10,7 +10,9 @@ defmodule CreditPerks.Contexts.UsersContextTest do
         username: "test_01",
         password: "password_01",
         email: "email_01@test.com",
-        age: 100
+        age: 100,
+        new_password: "new_password_01",
+        role: "ADMIN"
       }
 
       {:ok, user} =
@@ -43,7 +45,9 @@ defmodule CreditPerks.Contexts.UsersContextTest do
         username: "test_04",
         password: "password_04",
         email: "email_01@test.com",
-        age: 100
+        age: 100,
+        new_password: "new_password_01",
+        role: "ADMIN"
       }
 
       {:ok, user} =
@@ -60,7 +64,9 @@ defmodule CreditPerks.Contexts.UsersContextTest do
         username: "test_01",
         password: "password_01",
         email: "email_01@test.com",
-        age: 100
+        age: 100,
+        new_password: "new_password_01",
+        role: "ADMIN"
       }
 
       {:error, %Ecto.Changeset{} = changeset} =

@@ -69,7 +69,7 @@ defmodule Api.Schema do
     middleware ++ [ApolloTracing.Middleware.Tracing]
   end
 
-  defp add(middleware, :changeset_errors, field, %{identifier: :mutation}) do
+  defp add(middleware, :changeset_errors, _field, %{identifier: :mutation}) do
     middleware ++ [Middleware.ChangesetErrors]
   end
 
