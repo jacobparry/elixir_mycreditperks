@@ -362,7 +362,9 @@ defmodule Api.Resolvers.UserResolverTest do
         username: "new_user",
         password: "new_password",
         email: "new_email@new.com",
-        age: 21
+        age: 21,
+        new_password: "new_password_01",
+        role: "ADMIN"
       }
     }
 
@@ -404,13 +406,17 @@ defmodule Api.Resolvers.UserResolverTest do
         username: "new_user_1",
         password: "new_password_1",
         email: "new_email_1@new.com",
-        age: 21
+        age: 21,
+        new_password: "new_password_01",
+        role: "ADMIN"
       },
       input2: %{
         username: "new_user_2",
         password: "new_password_2",
         email: "new_email_2@new.com",
-        age: 12
+        age: 12,
+        new_password: "new_password_01",
+        role: "ADMIN"
       }
     }
 
@@ -490,13 +496,17 @@ defmodule Api.Resolvers.UserResolverTest do
         username: "new_user_1",
         password: "new_password_1",
         email: "new_email_1@new.com",
-        age: 21
+        age: 21,
+        new_password: "new_password_01",
+        role: "ADMIN"
       },
       input2: %{
         username: "new_user_1",
         password: "new_password_1",
         email: "new_email_1@new.com",
-        age: 21
+        age: 21,
+        new_password: "new_password_01",
+        role: "ADMIN"
       }
     }
 
@@ -546,13 +556,17 @@ defmodule Api.Resolvers.UserResolverTest do
         username: "new_user_1",
         password: "new_password_1",
         email: "new_email_1@new.com",
-        age: 21
+        age: 21,
+        new_password: "new_password_01",
+        role: "ADMIN"
       },
       input2: %{
         username: "new_user_1",
         password: "new_password_1",
         email: "new_email_1@new.com",
-        age: 21
+        age: 21,
+        new_password: "new_password_01",
+        role: "ADMIN"
       }
     }
 

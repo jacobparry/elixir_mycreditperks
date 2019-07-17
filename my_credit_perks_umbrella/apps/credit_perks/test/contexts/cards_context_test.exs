@@ -57,7 +57,11 @@ defmodule CreditPerks.Contexts.CardsContextTest do
     test "delete_card/1 deletes the card" do
       {:ok, card} = card_fixture()
       assert {:ok, %Card{}} = CardsContext.delete_card(card)
-      assert_raise Ecto.NoResultsError, fn -> CardsContext.get_card!(card.id) |> IO.inspect() end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        CardsContext.get_card!(card.id)
+        # |> IO.inspect()
+      end
     end
 
     test "change_card/1 returns a card changeset" do
