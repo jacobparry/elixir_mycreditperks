@@ -55,6 +55,8 @@ defmodule Api.Schema.Mutations.UserMutations do
     field(:password, non_null(:string))
     field(:email, non_null(:string))
     field(:age, :integer)
+    field(:new_password, :string)
+    field(:role, :string)
   end
 
   input_object :create_user_input_with_nulls do
@@ -62,6 +64,8 @@ defmodule Api.Schema.Mutations.UserMutations do
     field(:password, :string)
     field(:email, :string)
     field(:age, :integer)
+    field(:new_password, :string)
+    field(:role, :string)
   end
 
   @desc "The results of trying to create a user. Either a user or a list of errors."

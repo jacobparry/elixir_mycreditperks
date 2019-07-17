@@ -55,10 +55,10 @@ defmodule Api.Schema do
   end
 
   def middleware(middleware, field, object) do
-    IO.inspect(
-      field_identifier: field.identifier,
-      object_identifier: object.identifier
-    )
+    # IO.inspect(
+    #   field_identifier: field.identifier,
+    #   object_identifier: object.identifier
+    # )
 
     middleware
     |> add(:changeset_errors, field, object)
@@ -69,7 +69,7 @@ defmodule Api.Schema do
     middleware ++ [ApolloTracing.Middleware.Tracing]
   end
 
-  defp add(middleware, :changeset_errors, field, %{identifier: :mutation}) do
+  defp add(middleware, :changeset_errors, _field, %{identifier: :mutation}) do
     middleware ++ [Middleware.ChangesetErrors]
   end
 

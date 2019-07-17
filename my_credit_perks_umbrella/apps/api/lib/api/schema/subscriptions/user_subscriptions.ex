@@ -39,7 +39,7 @@ defmodule Api.Schema.Subscriptions.UserSubscriptions do
       )
 
       resolve(fn user, _, _ ->
-        IO.inspect(user)
+        # IO.inspect(user)
         {:ok, user}
       end)
     end
