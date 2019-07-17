@@ -45,7 +45,7 @@ defmodule Db.Seeds do
     inserted_users =
       Enum.map(users, fn user ->
         Repo.insert(user)
-        |> IO.inspect()
+        # |> IO.inspect()
       end)
   end
 
