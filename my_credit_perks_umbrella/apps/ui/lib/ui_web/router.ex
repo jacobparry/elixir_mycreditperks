@@ -11,6 +11,7 @@ defmodule UiWeb.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
+    plug(UiWeb.Plugs.Context)
   end
 
   scope "/", UiWeb do
