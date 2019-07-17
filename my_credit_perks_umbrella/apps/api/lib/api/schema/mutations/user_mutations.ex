@@ -69,6 +69,8 @@ defmodule Api.Schema.Mutations.UserMutations do
     field(:password, :string)
     field(:email, :string)
     field(:age, :integer)
+    field(:new_password, :string)
+    field(:role, :string)
   end
 
   @desc "The results of trying to create a user. Either a user or a list of errors."
