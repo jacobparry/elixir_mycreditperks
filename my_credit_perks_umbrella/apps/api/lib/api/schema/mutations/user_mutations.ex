@@ -18,6 +18,19 @@ defmodule Api.Schema.Mutations.UserMutations do
       arg(:input, non_null(:create_user_input_with_nulls))
       resolve(&UserResolver.create_user_best_errors/3)
     end
+
+    field :update_user, :user do
+      arg(:input, non_null(:update_user_input))
+      resolve(&UserResolver.update_user/3)
+    end
+  end
+
+  input_object :update_user_input do
+    field(:id, non_null(:id))
+    field(:username, :string)
+    field(:password, :string)
+    field(:email, :string)
+    field(:age, :integer)
   end
 
   input_object :create_user_input do

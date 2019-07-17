@@ -11,5 +11,14 @@ defmodule Api.Schema.Subscriptions.UserSubscriptions do
         {:ok, topic: "*"}
       end)
     end
+
+    field :update_user, :user do
+      arg(:id, non_null(:id))
+
+      # If whatever we are listening to contains "brady", then we get the subscription.
+      config(fn args, _info ->
+        {:ok, topic: "brady"}
+      end)
+    end
   end
 end
