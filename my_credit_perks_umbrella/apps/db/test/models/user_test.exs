@@ -19,10 +19,13 @@ defmodule Db.Models.UserTest do
         username: "user_1",
         password: "password_1",
         email: "email_1",
-        age: "21"
+        age: "21",
+        new_password: "new_password_01",
+        role: "ADMIN"
       }
 
       changeset = User.changeset(%User{}, params)
+
       assert changeset.valid?
     end
 
@@ -30,7 +33,9 @@ defmodule Db.Models.UserTest do
       params = %{
         password: "password_1",
         email: "email_1",
-        age: "21"
+        age: "21",
+        new_password: "new_password_01",
+        role: "ADMIN"
       }
 
       changeset = User.changeset(%User{}, params)
@@ -41,7 +46,9 @@ defmodule Db.Models.UserTest do
       params = %{
         username: "user_1",
         email: "email_1",
-        age: "21"
+        age: "21",
+        new_password: "new_password_01",
+        role: "ADMIN"
       }
 
       changeset = User.changeset(%User{}, params)
@@ -52,7 +59,33 @@ defmodule Db.Models.UserTest do
       params = %{
         username: "user_1",
         password: "password_1",
-        age: "21"
+        age: "21",
+        new_password: "new_password_01",
+        role: "ADMIN"
+      }
+
+      changeset = User.changeset(%User{}, params)
+      refute changeset.valid?
+    end
+
+    test "a missing NEW_PASSWORD returns an invalid changeset" do
+      params = %{
+        username: "user_1",
+        password: "password_1",
+        age: "21",
+        role: "ADMIN"
+      }
+
+      changeset = User.changeset(%User{}, params)
+      refute changeset.valid?
+    end
+
+    test "a missing ROLE returns an invalid changeset" do
+      params = %{
+        username: "user_1",
+        password: "password_1",
+        age: "21",
+        new_password: "new_password_01"
       }
 
       changeset = User.changeset(%User{}, params)
@@ -63,7 +96,9 @@ defmodule Db.Models.UserTest do
       params = %{
         username: "user_1",
         password: "password_1",
-        email: "email_1"
+        email: "email_1",
+        new_password: "new_password_01",
+        role: "ADMIN"
       }
 
       changeset = User.changeset(%User{}, params)

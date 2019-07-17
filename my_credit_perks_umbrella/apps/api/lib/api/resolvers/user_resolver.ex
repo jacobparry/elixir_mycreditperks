@@ -132,7 +132,7 @@ defmodule Api.Resolvers.UserResolver do
 
   defp transform_errors(%Ecto.Changeset{} = changeset) do
     changeset
-    |> IO.inspect()
+    # |> IO.inspect()
     |> Ecto.Changeset.traverse_errors(&format_error/1)
     |> Enum.map(fn {key, value} ->
       %{key: key, message: value}
