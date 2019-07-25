@@ -12,6 +12,10 @@ defmodule Api.Application do
       # {Api.Worker, arg},
     ]
 
+    if Mix.env() == :dev do
+      System.put_env("DEBUG", "true")
+    end
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Api.Supervisor]

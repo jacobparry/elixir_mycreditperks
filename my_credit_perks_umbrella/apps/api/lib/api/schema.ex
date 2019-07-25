@@ -61,6 +61,7 @@ defmodule Api.Schema do
     # )
 
     middleware
+    |> add(:debug, field, object)
     |> add(:changeset_errors, field, object)
     |> add(:apollo_tracing, field, object)
   end
@@ -71,6 +72,14 @@ defmodule Api.Schema do
 
   defp add(middleware, :changeset_errors, _field, %{identifier: :mutation}) do
     middleware ++ [Middleware.ChangesetErrors]
+  end
+
+  defp add(middleware, :debug, _field, _object) do
+    if System.get_env("DEBUG") do
+      [{Middleware.Debug, :start}] ++ middleware
+    else
+      middleware
+    end
   end
 
   defp add(middleware, :changeset_errors, _field, _object) do
