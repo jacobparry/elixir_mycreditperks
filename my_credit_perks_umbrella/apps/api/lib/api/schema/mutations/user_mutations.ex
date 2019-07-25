@@ -20,6 +20,12 @@ defmodule Api.Schema.Mutations.UserMutations do
       resolve(&UserResolver.create_user_restricted/3)
     end
 
+    field :create_user_restricted_with_middleware, :user do
+      arg(:input, non_null(:create_user_input))
+      middleware(Middleware.Authorize, "ADMIN")
+      resolve(&UserResolver.create_user_restricted/3)
+    end
+
     field :create_user_with_middleware, :create_user_result do
       arg(:input, non_null(:create_user_input_with_nulls))
       resolve(&UserResolver.create_user_with_middleware/3)
