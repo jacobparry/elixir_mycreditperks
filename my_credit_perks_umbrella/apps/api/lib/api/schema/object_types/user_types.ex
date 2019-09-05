@@ -16,6 +16,10 @@ defmodule Api.Schema.ObjectTypes.UserTypes do
     field(:user_cards, list_of(:card)) do
       resolve(&UserResolver.find_cards_for_user/3)
     end
+
+    field(:user_cards_async, list_of(:card)) do
+      resolve(&UserResolver.find_cards_for_user_async/3)
+    end
   end
 
   interface :other_user do

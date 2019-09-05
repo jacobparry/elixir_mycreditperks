@@ -85,6 +85,16 @@ defmodule Api.Schema do
   defp add(middleware, :changeset_errors, _field, _object) do
     middleware
   end
+
+  def enable_debug_middleware do
+    if Mix.env() == :dev do
+      System.put_env("DEBUG", "true")
+    end
+  end
+
+  def disable_debug_middleware do
+    System.delete_env("DEBUG")
+  end
 end
 
 # IEX Commands to use

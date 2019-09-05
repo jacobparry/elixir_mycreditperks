@@ -2,6 +2,7 @@ defmodule Api.Resolvers.UserResolver do
   @moduledoc """
   Resolver that handles getting information regarding the User Struct
   """
+  import Absinthe.Resolution.Helpers, only: [async: 1]
 
   alias CreditPerks.Contexts.UsersContext
 
@@ -46,6 +47,10 @@ defmodule Api.Resolvers.UserResolver do
   end
 
   def find_cards_for_user(parent, _params, _resolution) do
+    Process.sleep(1000)
+    IO.inspect("************* Finding User Cards")
+    IO.inspect("************* #{Timex.now()}")
+
     case UsersContext.find_cards_for_user(parent) do
       {:ok, _} = success ->
         success
@@ -53,6 +58,22 @@ defmodule Api.Resolvers.UserResolver do
       {:error, _} ->
         {:error, "Could not cards for user"}
     end
+  end
+
+  def find_cards_for_user_async(parent, _params, _resolution) do
+    async(fn ->
+      Process.sleep(1000)
+      IO.inspect("************* Finding User Cards Async")
+      IO.inspect("************* #{Timex.now()}")
+
+      case UsersContext.find_cards_for_user(parent) do
+        {:ok, _} = success ->
+          success
+
+        {:error, _} ->
+          {:error, "Could not cards for user"}
+      end
+    end)
   end
 
   def create_user(_parent, %{input: params} = _params, _resolution) do
