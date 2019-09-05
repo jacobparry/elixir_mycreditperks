@@ -142,4 +142,43 @@ defmodule CreditPerks.Contexts.UsersContext do
 
     {:ok, Repo.all(query)}
   end
+
+  def get_cards_by_user_id(%{card_name_contains: name_str}, user_ids) do
+    Process.sleep(1000)
+    IO.inspect("************* Finding User Cards Batch filters")
+    IO.inspect("************* #{Timex.now()}")
+
+    query =
+      from(uc in UserCard,
+        join: c in assoc(uc, :card),
+        where: uc.user_id in ^user_ids,
+        where: ilike(c.name, ^"%#{name_str}%"),
+        # where: not ilike(c.company_name_on_card, ^"%defunct%"),
+
+        select: {uc.user_id, c}
+      )
+
+    query
+    |> Repo.all()
+    |> IO.inspect()
+    |> Map.new()
+  end
+
+  def get_cards_by_user_id(_filter_params, user_ids) do
+    Process.sleep(1000)
+    IO.inspect("************* Finding User Cards Batch")
+    IO.inspect("************* #{Timex.now()}")
+
+    query =
+      from(uc in UserCard,
+        join: c in assoc(uc, :card),
+        where: uc.user_id in ^user_ids,
+        select: {uc.user_id, c}
+      )
+
+    query
+    |> Repo.all()
+    |> Map.new()
+    |> IO.inspect()
+  end
 end

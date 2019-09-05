@@ -2,7 +2,7 @@ defmodule Api.Resolvers.UserResolver do
   @moduledoc """
   Resolver that handles getting information regarding the User Struct
   """
-  import Absinthe.Resolution.Helpers, only: [async: 1]
+  import Absinthe.Resolution.Helpers, only: [async: 1, batch: 3]
 
   alias CreditPerks.Contexts.UsersContext
 
@@ -74,6 +74,22 @@ defmodule Api.Resolvers.UserResolver do
           {:error, "Could not cards for user"}
       end
     end)
+  end
+
+  def find_cards_for_user_batch(parent, _params, _resolution) do
+    batch({UsersContext, :get_cards_by_user_id}, parent.id, fn cards ->
+      {:ok, Map.get(cards, parent.id)}
+    end)
+  end
+
+  def find_cards_for_user_batch_odds(parent, _params, _resolution) do
+    batch(
+      {UsersContext, :get_cards_by_user_id, %{card_name_contains: "Chase"}},
+      parent.id,
+      fn cards ->
+        {:ok, Map.get(cards, parent.id)}
+      end
+    )
   end
 
   def create_user(_parent, %{input: params} = _params, _resolution) do
