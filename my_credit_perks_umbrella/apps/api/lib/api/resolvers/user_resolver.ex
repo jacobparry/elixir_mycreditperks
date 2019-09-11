@@ -78,7 +78,29 @@ defmodule Api.Resolvers.UserResolver do
 
   def find_cards_for_user_batch(parent, _params, _resolution) do
     batch({UsersContext, :get_cards_by_user_id}, parent.id, fn cards ->
-      {:ok, Map.get(cards, parent.id)}
+      card_list =
+        cards
+        |> Keyword.take([parent.id])
+        |> IO.inspect()
+        |> Enum.map(fn {user_id, card} ->
+          card
+        end)
+
+      # c_list =
+      #   Enum.map(cards, fn {id, card} = _object ->
+      #     if id == parent.id do
+      #       card
+      #     else
+      #       nil
+      #     end
+      #   end)
+
+      # l =
+      #   Enum.filter(c_list, fn c ->
+      #     c != nil
+      #   end)
+
+      {:ok, card_list}
     end)
   end
 

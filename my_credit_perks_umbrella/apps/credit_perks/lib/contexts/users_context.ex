@@ -178,7 +178,5 @@ defmodule CreditPerks.Contexts.UsersContext do
 
     query
     |> Repo.all()
-    |> Map.new()
-    |> IO.inspect()
   end
 end
