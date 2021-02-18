@@ -392,3 +392,111 @@ end
       end
     end
     ```
+
+# 2.6-setup-tests
+  * One thing that we have neglected to do up until this point was to write some tests. Let's correct that.
+  * We need to write tests for our DB models and our single health field in our GraphQL schema.
+  1. Create a folder called `models` located at `[umbrella_app]/apps/[database_app]/test/models`.
+  2. Create a file named `user_test.exs` located at `[umbrella_app]/apps/[database_app]/models/user_test.exs`
+    * Write some tests that test the functionality of the `user.ex` ecto changeset function.
+    * The file will look something like this:
+    ```
+    defmodule Db.Models.UserTest do
+      use ExUnit.Case
+      alias Db.Models.User
+
+      describe "changeset/2" do
+        test "returns a valid changeset" do
+          params = %{
+            username: "user_1",
+            password: "password_1",
+            email: "email_1",
+            age: "21"
+          }
+
+          changeset = User.changeset(%User{}, params)
+          assert changeset.valid?
+        end
+
+        test "a missing USERNAME returns an invalid changeset" do
+          params = %{
+            password: "password_1",
+            email: "email_1",
+            age: "21"
+          }
+
+          changeset = User.changeset(%User{}, params)
+          refute changeset.valid?
+        end
+
+        test "a missing PASSWORD returns an invalid changeset" do
+          params = %{
+            username: "user_1",
+            email: "email_1",
+            age: "21"
+          }
+
+          changeset = User.changeset(%User{}, params)
+          refute changeset.valid?
+        end
+
+        test "a missing EMAIL returns an invalid changeset" do
+          params = %{
+            username: "user_1",
+            password: "password_1",
+            age: "21"
+          }
+
+          changeset = User.changeset(%User{}, params)
+          refute changeset.valid?
+        end
+
+        test "a missing AGE still returns a valid changeset" do
+          params = %{
+            username: "user_1",
+            password: "password_1",
+            email: "email_1"
+          }
+
+          changeset = User.changeset(%User{}, params)
+          assert changeset.valid?
+        end
+      end
+    end
+    ```
+  3. Once you have done that, create test files for all the models that we created:`card_test.ex`, `perk_test.ex`, `user_card_test.exs`. They will all follow a similar style of testing.
+  4. Add an api endpoint for our tests to hit for testing Graphql queries  
+    * Navigate to `[umbrella_app]/apps/[ui_app]/lib/ui_web/router.ex`
+    * Inside of the scope that we defined earlier, we will add another forward.
+    * `forward("/api", Absinthe.Plug, schema: Api.Schema)`
+    * This creates the endpoint that an API client and our tests will use.
+  5. Write a simple test that tests our `health` field in our Absinthe Schema file.
+    * Navigate to `[umbrella_app]/apps/[api]/mix.exs`
+    * Add `{:ui, in_umbrella: true}` inside of the `deps` function. This allows us to use Phoenix to help test our api endpoint.
+    * Create a file named `schema_test.exs` located at `[umbrella_app]/apps/[api_app]/test/api/schema_test.exs`
+    * The file will look like this:
+    ```
+    defmodule Api.SchemaTest do
+      use ExUnit.Case
+
+      # UiWeb.ConnCase allows us to build a connection and post it against an api endpoint
+      # This allows us to test our GraphQL queries
+      use UiWeb.ConnCase, async: true
+
+      @query """
+      {
+        health
+      }
+      """
+
+      describe "query" do
+        test "health" do
+          conn = build_conn()
+          conn = get(conn, "/playground/api", query: @query)
+
+          response = json_response(conn, 200)
+          assert response == %{"data" => %{"health" => "up"}}
+        end
+      end
+    end
+    ```
