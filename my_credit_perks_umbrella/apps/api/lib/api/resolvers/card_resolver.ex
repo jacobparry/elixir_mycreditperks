@@ -9,6 +9,10 @@ defmodule Api.Resolvers.CardResolver do
   alias Db.Repo
 
   def find_all_cards(_, _, _) do
+    Repo.all(Card)
+    |> length()
+    |> IO.inspect()
+
     {:ok, Repo.all(Card)}
   end
 
@@ -19,6 +23,10 @@ defmodule Api.Resolvers.CardResolver do
         where: uc.card_id == ^parent.id,
         select: u
       )
+
+    Repo.all(query)
+    |> length()
+    |> IO.inspect()
 
     {:ok, Repo.all(query)}
   end
