@@ -1,5 +1,6 @@
 defmodule Api.Schema do
   use Absinthe.Schema
+  use ApolloTracing
 
   alias Db.Repo
 
