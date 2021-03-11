@@ -27,6 +27,14 @@ use Mix.Config
 # Configuration from the imported file will override the ones defined
 # here (which is why it is important to import them last).
 #
-import_config "#{Mix.env()}.exs"
+#     import_config "#{Mix.env()}.exs"
 
-config :db, ecto_repos: [Db.Repo]
+# https://hexdocs.pm/ecto/testing-with-ecto.html
+# This allows us to use a test db that is reset between tests.
+# When running tests, it defaults to the test Mix.env.
+config :db, Db.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "creditperks_test",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox
