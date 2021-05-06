@@ -1,6 +1,8 @@
 defmodule Api.Schema.ObjectTypes.UserTypes do
   use Absinthe.Schema.Notation
 
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
+
   alias Api.Resolvers.UserResolver
 
   object :user do
@@ -23,6 +25,14 @@ defmodule Api.Schema.ObjectTypes.UserTypes do
 
     field(:user_cards_batch, list_of(:card)) do
       resolve(&UserResolver.find_cards_for_user_batch/3)
+    end
+
+    field(:user_cards_dataloader, list_of(:card)) do
+      resolve(&UserResolver.find_cards_for_user_dataloader/3)
+    end
+
+    field(:user_cards_dataloader_broken, list_of(:card)) do
+      resolve(dataloader(Api.DataloaderSource))
     end
 
     field(:user_cards_batch_filters, list_of(:card)) do

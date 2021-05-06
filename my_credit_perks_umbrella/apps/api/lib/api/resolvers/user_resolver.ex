@@ -104,6 +104,20 @@ defmodule Api.Resolvers.UserResolver do
     end)
   end
 
+  def find_cards_for_user_dataloader(parent, _params, %{context: %{loader: loader}}) do
+    # loader
+    # |> Dataloader.load_many(Api.DataloaderSource, Db.Models.UserCard, )
+    # |> IO.inspect()
+
+    case UsersContext.find_cards_for_user(parent) do
+      {:ok, _} = success ->
+        success
+
+      {:error, _} ->
+        {:error, "Could not cards for user"}
+    end
+  end
+
   def find_cards_for_user_batch_odds(parent, _params, _resolution) do
     batch(
       {UsersContext, :get_cards_by_user_id, %{card_name_contains: "Chase"}},

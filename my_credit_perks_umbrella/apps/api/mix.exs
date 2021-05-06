@@ -40,6 +40,7 @@ defmodule Api.MixProject do
       {:absinthe_phoenix, "~> 1.4"},
       {:absinthe_relay, "~> 1.4"},
       {:apollo_tracing, "~> 0.4.1"},
+      {:dataloader, "~> 1.0"},
       {:db, in_umbrella: true},
       {:ui, in_umbrella: true},
       {:timex, "~> 3.5"}

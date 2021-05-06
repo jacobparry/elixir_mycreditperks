@@ -1,8 +1,10 @@
 defmodule Api.Schema do
   use Absinthe.Schema
+
   # use ApolloTracing
 
   alias Api.Schema.Middleware
+  alias Api.DataloaderSource
 
   @doc """
   Keep in mind that your API and the underlying data representations
@@ -94,6 +96,18 @@ defmodule Api.Schema do
 
   def disable_debug_middleware do
     System.delete_env("DEBUG")
+  end
+
+  def context(ctx) do
+    loader =
+      Dataloader.new()
+      |> Dataloader.add_source(DataloaderSource, DataloaderSource.data())
+
+    Map.put(ctx, :loader, loader)
+  end
+
+  def plugins do
+    [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
   end
 end
 
